@@ -80,9 +80,9 @@ Notes:
 
 ## 6. Phase D — Automated tests
 
-- `tests/` runs with `npm test` (Node only, no dependencies): **86 tests, all
-  passing** (includes `scripts/lock.js`, `unlock.js`, `verify.js`, `adr.js`,
-  `spec.js` and the portable `lock-guard.js`).
+- `tests/` runs with `npm test` (Node only, no dependencies): **89 tests, 188
+  assertions, all passing** (includes `scripts/lock.js`, `unlock.js`,
+  `verify.js`, `adr.js`, `spec.js` and the portable `lock-guard.js`).
 - Coverage: locked/unlocked files, expired unlock, scoped unlock, relative,
   absolute and Windows backslash paths, bash write operators (`>`, `>>`, `tee`,
   `sed -i`, `rm`, `mv`), PowerShell cmdlets (`Set-Content`, `Out-File`,
@@ -170,6 +170,33 @@ Added after the first pass, per the user's request for distinct **Beginner** and
   **rejected** (exit 1), while an unlocked-file commit succeeded — so the
   structure lock holds for Codex, manual commits and CI, not just Claude Code.
   Unit + e2e tested.
+
+## 7e. Full from-zero dogfood run (spec mode)
+
+A real headless `claude` session (`--plugin-dir`, spec-mode) ran
+`/repo-forge:new-repo` end-to-end from an empty folder with the bakery
+`repoforge.config.json`. It validated the spec, advised the stack, produced
+rules/workflow/Brief, scaffolded a **Next.js + Drizzle/SQLite** app
+(`create-next-app`), generated and filled every constitution document, installed
+the pre-commit guards, and locked 10 files. Ground-truth verification on the
+output:
+
+- `npm run build` → **success**; `npm run lint` → **success**.
+- `verify.js` → **8 ok, 0 warnings, 0 failures** (25 rules, no placeholders,
+  `.env` ignored, `.env.example` present, all core docs, ADR present).
+- The guard blocks a locked-doc edit (exit 2); `.env.example` holds placeholders
+  only.
+
+This run found and fixed **two real bugs** (exactly the point of testing from
+zero):
+1. The portable `lock-guard.js` blocked the *initial* commit of the constitution
+   files. It is now HEAD-aware — new files are allowed, only changes to
+   already-committed locked files are blocked. Verified with a real git
+   pre-commit hook: app commit → constitution commit (allowed) → later edit
+   (blocked).
+2. `unlock.js --paths all` wrote `["all"]`, which the guards didn't treat as
+   unlock-everything. `unlock.js` now normalizes `all`/`*` to the string
+   `"all"`, and the guards also accept an array form. Verified.
 
 ## 8. Open items / manual verification on the user's Windows PC
 

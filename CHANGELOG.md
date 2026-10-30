@@ -68,6 +68,12 @@ Code plugin schema, verified end-to-end, and added automated tests.
 ### Fixed
 - Documented and guarded against starter templates whose default `lint` script
   fails on a fresh project (observed with the current Vite React template).
+- Portable `lock-guard.js` is now HEAD-aware: it allows the **initial commit** of
+  the constitution files (new files) and blocks only changes to files already
+  committed. Found via a full from-zero dogfood run.
+- `unlock.js --paths all` (and `*`) now normalizes to the string `"all"`, and
+  the guards also accept an array containing `"all"`/`"*"`, so an explicit
+  unlock-everything works as expected. Found via the same run.
 
 ## [1.0.0]
 
