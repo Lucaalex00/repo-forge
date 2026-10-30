@@ -1,0 +1,18 @@
+# Repo Forge — ignored paths
+
+# End-to-end simulation output (never committed)
+/sandbox/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Repo Forge runtime unlock token (temporary, machine-local)
+.repoforge/unlock.json
