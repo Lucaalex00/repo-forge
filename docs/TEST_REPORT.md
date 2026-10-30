@@ -80,8 +80,8 @@ Notes:
 
 ## 6. Phase D — Automated tests
 
-- `tests/` runs with `npm test` (Node only, no dependencies): **50 tests, 106
-  assertions, all passing**.
+- `tests/` runs with `npm test` (Node only, no dependencies): **58 tests, 132
+  assertions, all passing** (includes `scripts/lock.js` and `scripts/unlock.js`).
 - Coverage: locked/unlocked files, expired unlock, scoped unlock, relative,
   absolute and Windows backslash paths, bash write operators (`>`, `>>`, `tee`,
   `sed -i`, `rm`, `mv`), PowerShell cmdlets (`Set-Content`, `Out-File`,
@@ -118,6 +118,24 @@ Laravel backend (relevant to scenarios 2/4) was scaffolded for real once the
 download completed: `composer create-project laravel/laravel` → Laravel 13.39.0;
 `./vendor/bin/pint --test` **passed**; `php artisan test` **2/2 passed**. This
 validates the `laravel.md` template commands.
+
+## 7b. Two-path interview, deterministic lock/unlock, secret guard
+
+Added after the first pass, per the user's request for distinct **Beginner** and
+**Expert** experiences and more robustness:
+
+- **Two interview paths.** `repo-interview` now opens with a path choice.
+  Beginner = mostly fixed-choice questions with recommended defaults and
+  auto-decided tech; Expert = open questions with full control. The 50-word
+  vision gate applies to both. `/repo-forge:new-repo` accepts `beginner`/`expert`.
+- **Deterministic lock/unlock** (`scripts/lock.js`, `scripts/unlock.js`).
+  Verified end-to-end against the guard: `lock` → write blocked; `unlock`
+  (scoped, 10-min) → write allowed; `unlock --clear` → write blocked again.
+  Unit-tested (timestamps, union/replace merge, path normalization, `all`
+  fallback).
+- **Pre-commit secret guard** template. Verified in a throwaway git repo: a real
+  `.env` is blocked, `.env.example` + clean code pass, a staged AWS-style key is
+  blocked. Pure Node, so it runs on Windows too.
 
 ## 8. Open items / manual verification on the user's Windows PC
 

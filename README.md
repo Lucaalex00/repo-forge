@@ -13,9 +13,13 @@ tutti i tuoi progetti.
 
 ## Cosa fa, in breve
 
-1. **Intervista** in 7 blocchi (visione — con gate obbligatorio di almeno 50
-   parole — funzionalità, requisiti non funzionali, vincoli, layout del repo,
-   preferenze di stack, regole di lavoro).
+1. **Intervista** con due percorsi a scelta:
+   - **Principiante** ("decidi tu"): poche domande a risposta fissa con default
+     consigliati, linguaggio semplice, il resto deciso in automatico;
+   - **Esperto** ("guido io"): domande aperte, controllo diretto di stack,
+     versioni e layout.
+   In entrambi i casi la **visione** ha un gate obbligatorio di almeno 50 parole;
+   poi funzionalità, requisiti non funzionali, vincoli, layout, stack e regole.
 2. **Consiglio sullo stack** separato per Frontend, Backend e Database. Il
    database di default è **SQLite**; i database server (SQL Server, PostgreSQL,
    MySQL, MongoDB) solo se fornisci le credenziali, che finiscono **solo** nel
@@ -41,27 +45,30 @@ Prerequisiti: avere **Claude Code** installato e funzionante (comando `claude`).
 I percorsi di esempio usano `C:\Progetti`.
 
 1. Apri **PowerShell**.
-2. Aggiungi il marketplace di Repo Forge (da GitHub):
+2. **Installa in un passo** (aggiunge il marketplace e installa):
 
    ```powershell
-   claude plugin marketplace add Lucaalex00/repo-forge
+   claude plugin install repo-forge@repo-forge --marketplace Lucaalex00/repo-forge --scope user
    ```
 
-3. Installa il plugin a livello utente:
-
-   ```powershell
-   claude plugin install repo-forge@repo-forge --scope user
-   ```
-
-4. Verifica che sia installato:
+3. Verifica che sia installato:
 
    ```powershell
    claude plugin list
    ```
 
-In alternativa, da dentro una sessione di Claude Code puoi usare i comandi
-`/plugin marketplace add Lucaalex00/repo-forge` e poi
+In due passi (equivalente), oppure da dentro una sessione di Claude Code:
+
+```powershell
+claude plugin marketplace add Lucaalex00/repo-forge
+claude plugin install repo-forge@repo-forge --scope user
+```
+
+Dentro una sessione: `/plugin marketplace add Lucaalex00/repo-forge` e poi
 `/plugin install repo-forge@repo-forge`.
+
+Per installare una versione fissa, aggiungi il tag:
+`claude plugin marketplace add Lucaalex00/repo-forge#v1.1.0`.
 
 > **Provarlo senza installarlo** (utile per svilupparlo): da una copia locale
 > del repository esegui `claude --plugin-dir .` in quella cartella.
@@ -92,7 +99,13 @@ spiega perché. Per cambiarli usa `/repo-forge:change`, che scrive un ADR, chied
 la tua approvazione e crea un `.repoforge/unlock.json` valido 10 minuti; a
 modifica fatta, il file di sblocco viene rimosso e il blocco torna attivo.
 `locked.json` viene committato (il blocco viaggia col repo); `unlock.json` è
-git-ignorato e locale.
+git-ignorato e locale. La creazione di `locked.json` e della finestra di sblocco
+è gestita da script deterministici (`scripts/lock.js`, `scripts/unlock.js`), così
+timestamp e scadenza non dipendono da calcoli a mano.
+
+Nei progetti generati viene anche installato un **guard pre-commit anti-segreti**
+(Node, cross-platform) che blocca il commit di file `.env` reali o di chiavi/token
+evidenti.
 
 ## Limiti noti
 

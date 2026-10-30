@@ -10,6 +10,18 @@ Hardening and test release: made the plugin conformant to the current Claude
 Code plugin schema, verified end-to-end, and added automated tests.
 
 ### Added
+- **Two interview paths**: Beginner ("decide for me", mostly fixed-choice
+  questions with recommended defaults) and Expert ("I drive", open questions,
+  full control). `/repo-forge:new-repo [beginner|expert]` selects one; the
+  50-word vision gate applies to both.
+- **Deterministic lock/unlock helpers** `scripts/lock.js` and `scripts/unlock.js`,
+  invoked by `/repo-forge:new-repo` and `/repo-forge:change`, so `locked.json`
+  and the 10-minute unlock window are written by code, not hand-typed.
+- **Pre-commit secret guard** template (`skills/repo-scaffolder/references/
+  precommit/`) installed into generated projects to block committing `.env` or
+  obvious secrets; cross-platform (pure Node).
+- Four more per-stack `CLAUDE.md` templates: SvelteKit, Astro, Go, Symfony
+  (13 total).
 - Local validator `scripts/validate-plugin.js` (JSON + skill/command frontmatter).
 - Zero-dependency test suite in `tests/` (guard logic, file/bash/PowerShell
   writes, relative/absolute/Windows paths, unlock + expiry, malformed input,
