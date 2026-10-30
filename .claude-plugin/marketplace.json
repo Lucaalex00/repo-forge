@@ -1,0 +1,17 @@
+{
+  "name": "repo-forge",
+  "owner": {
+    "name": "Lucaalex00",
+    "url": "https://github.com/Lucaalex00"
+  },
+  "description": "Repo Forge marketplace — the interview-driven, structure-locking repository scaffolder for Claude Code.",
+  "plugins": [
+    {
+      "name": "repo-forge",
+      "source": "./",
+      "description": "Interview-driven, structure-locked web repository scaffolder.",
+      "category": "scaffolding",
+      "tags": ["scaffold", "governance", "interview", "stack"]
+    }
+  ]
+}
