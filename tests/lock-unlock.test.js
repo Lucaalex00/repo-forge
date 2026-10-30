@@ -55,6 +55,13 @@ test('unlock.buildUnlock: empty paths => "all"; invalid minutes => 10', (t) => {
   t.equal(d.paths, 'all');
   t.equal(d.expiresAt, new Date(NOW + 10 * 60000).toISOString());
 });
+test('unlock.buildUnlock: --paths "all"/"*" collapses to the string "all"', (t) => {
+  t.equal(unlock.buildUnlock({ paths: ['all'], minutes: 10, now: NOW }).paths, 'all');
+  t.equal(unlock.buildUnlock({ paths: ['*'], minutes: 10, now: NOW }).paths, 'all');
+});
+test('guard.isUnlocked accepts an array ["all"]', (t) => {
+  t.ok(guard.isUnlocked('PROJECT_BRIEF.md', { expiresAt: new Date(Date.now() + 600000).toISOString(), paths: ['all'] }, Date.now()));
+});
 test('unlock.run then --clear removes the token', (t) => {
   const dir = tmp();
   unlock.run({ dir, paths: ['a.md'], minutes: 10, reason: 'r', adr: 'docs/adr/1.md' }, NOW);

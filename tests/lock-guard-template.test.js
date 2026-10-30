@@ -21,6 +21,7 @@ test('lock-guard template: isUnlocked honors expiry and scope', (t) => {
   t.ok(lg.isUnlocked('A.md', { expiresAt: future(), paths: 'all' }, Date.now()));
   t.ok(!lg.isUnlocked('A.md', { expiresAt: '2000-01-01T00:00:00Z', paths: 'all' }, Date.now()));
   t.ok(!lg.isUnlocked('A.md', { expiresAt: future(), paths: ['B.md'] }, Date.now()));
+  t.ok(lg.isUnlocked('A.md', { expiresAt: future(), paths: ['all'] }, Date.now())); // array "all"
 });
 
 function gitRepo() {
@@ -36,8 +37,15 @@ function runGuard(dir) {
   return require('child_process').spawnSync('node', [GUARD], { cwd: dir, encoding: 'utf8' });
 }
 
-test('lock-guard e2e: committing a locked file is blocked (exit 1)', (t) => {
+test('lock-guard e2e: initial addition of a locked file is allowed (not yet in HEAD)', (t) => {
+  const dir = gitRepo(); // no commits yet
+  execSync('git add ARCHITECTURE.md', { cwd: dir });
+  t.equal(runGuard(dir).status, 0, 'first commit of the constitution must be allowed');
+});
+test('lock-guard e2e: modifying an already-committed locked file is blocked (exit 1)', (t) => {
   const dir = gitRepo();
+  execSync('git add . && git commit -q -m baseline', { cwd: dir }); // commit locked file
+  fs.appendFileSync(path.join(dir, 'ARCHITECTURE.md'), '\nedited\n');
   execSync('git add ARCHITECTURE.md', { cwd: dir });
   const res = runGuard(dir);
   t.equal(res.status, 1);
@@ -45,11 +53,15 @@ test('lock-guard e2e: committing a locked file is blocked (exit 1)', (t) => {
 });
 test('lock-guard e2e: committing only an unlocked file is allowed (exit 0)', (t) => {
   const dir = gitRepo();
+  execSync('git add . && git commit -q -m baseline', { cwd: dir });
+  fs.appendFileSync(path.join(dir, 'app.ts'), '\n// more\n');
   execSync('git add app.ts', { cwd: dir });
   t.equal(runGuard(dir).status, 0);
 });
-test('lock-guard e2e: a valid unlock window allows the locked commit', (t) => {
+test('lock-guard e2e: a valid unlock window allows modifying a committed locked file', (t) => {
   const dir = gitRepo();
+  execSync('git add . && git commit -q -m baseline', { cwd: dir });
+  fs.appendFileSync(path.join(dir, 'ARCHITECTURE.md'), '\nedited\n');
   fs.writeFileSync(path.join(dir, '.repoforge', 'unlock.json'), JSON.stringify({ expiresAt: future(), paths: ['ARCHITECTURE.md'] }));
   execSync('git add ARCHITECTURE.md', { cwd: dir });
   t.equal(runGuard(dir).status, 0);

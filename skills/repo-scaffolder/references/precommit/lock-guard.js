@@ -38,8 +38,21 @@ function isUnlocked(rel, unlock, now) {
   if (!Number.isFinite(exp) || exp <= now) return false;
   const paths = unlock.paths;
   if (paths === undefined || paths === null || paths === 'all' || paths === '*') return true;
-  if (Array.isArray(paths)) return paths.some((p) => pathMatches(p, rel));
+  if (Array.isArray(paths)) {
+    if (paths.some((p) => p === 'all' || p === '*')) return true;
+    return paths.some((p) => pathMatches(p, rel));
+  }
   return false;
+}
+
+/** True if the path already exists in the current HEAD commit. New files
+ *  (first commit, or newly added locked files) are not yet committed, so adding
+ *  them is allowed — the lock protects *changes* to committed files. */
+function existsInHead(root, rel) {
+  try {
+    execSync(`git -C ${JSON.stringify(root)} cat-file -e HEAD:${JSON.stringify(rel)}`, { stdio: 'ignore' });
+    return true;
+  } catch (_) { return false; }
 }
 
 function findRoot(start) {
@@ -70,7 +83,12 @@ function main() {
   const blocked = [];
   for (const f of staged) {
     const hit = locked.find((rel) => pathMatches(f, rel));
-    if (hit && !isUnlocked(hit, unlock, now)) blocked.push(hit);
+    if (!hit) continue;
+    if (isUnlocked(hit, unlock, now)) continue;
+    // Allow the initial addition of a locked file; block only changes to a
+    // file that is already committed in HEAD.
+    if (!existsInHead(root, f)) continue;
+    blocked.push(hit);
   }
 
   if (blocked.length) {

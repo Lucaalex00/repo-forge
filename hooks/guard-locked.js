@@ -228,7 +228,10 @@ function isUnlocked(lockedRel, unlock, now) {
   if (!Number.isFinite(expires) || expires <= now) return false; // missing or expired
   const paths = unlock.paths;
   if (paths === undefined || paths === null || paths === 'all' || paths === '*') return true;
-  if (Array.isArray(paths)) return paths.some((p) => pathMatches(p, lockedRel) || pathMatches(lockedRel, p));
+  if (Array.isArray(paths)) {
+    if (paths.some((p) => p === 'all' || p === '*')) return true;
+    return paths.some((p) => pathMatches(p, lockedRel) || pathMatches(lockedRel, p));
+  }
   return false;
 }
 

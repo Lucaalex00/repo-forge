@@ -39,10 +39,13 @@ function normalizeRel(p) {
 
 function buildUnlock({ paths, minutes, reason, adr, now }) {
   const mins = Number.isFinite(minutes) && minutes > 0 ? minutes : 10;
+  const list = Array.isArray(paths) ? paths : [];
+  // Treat an explicit "all"/"*" (e.g. --paths all) as unlock-everything.
+  const scoped = list.length && !list.some((p) => p === 'all' || p === '*');
   const data = {
     createdAt: new Date(now).toISOString(),
     expiresAt: new Date(now + mins * 60 * 1000).toISOString(),
-    paths: paths && paths.length ? paths.map(normalizeRel) : 'all',
+    paths: scoped ? list.map(normalizeRel) : 'all',
   };
   if (reason) data.reason = reason;
   if (adr) data.adr = normalizeRel(adr);
