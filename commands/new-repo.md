@@ -28,11 +28,27 @@ Arguments: `$ARGUMENTS`
 - Do work in **phases**, and do not skip a phase. Produce the **Project Brief**
   and get **explicit approval** before creating any files.
 
+## Phase 0 — Non-interactive spec (agentic / low-token)
+
+Before interviewing, check for a `repoforge.config.json` in the target directory
+(or a path the user gave). If present, validate it and **skip the interview**:
+
+```bash
+node "${CLAUDE_PLUGIN_ROOT}/scripts/spec.js" --file repoforge.config.json --dir <target>
+```
+
+If it validates (the 50-word vision gate is enforced here too), use the
+normalized spec as the interview output and jump straight to Phase 2 (stack) →
+Brief → scaffold → docs → lock, asking the user only to approve the Brief. If it
+reports errors, show them and either fix the spec with the user or fall back to
+the interview. See `skills/repo-interview/references/spec-schema.md`.
+
 ## Run these phases in order
 
-1. **Interview** — invoke the `repo-interview` skill. Choose the path
-   (Beginner = mostly fixed-choice, express; Expert = open questions, full
-   control). The 50-word vision gate applies to **both** paths before continuing.
+1. **Interview** — if no valid spec was provided, invoke the `repo-interview`
+   skill. Choose the path (Beginner = mostly fixed-choice, express; Expert =
+   open questions, full control). The 50-word vision gate applies to **both**
+   paths before continuing.
 2. **Stack advice** — invoke the `stack-advisor` skill. Recommend Frontend,
    Backend and Database separately. Default database is **SQLite**; a server
    database (SQL Server, PostgreSQL, MySQL, MongoDB) only if the user supplies

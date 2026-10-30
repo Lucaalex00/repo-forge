@@ -1,0 +1,14 @@
+{
+  "level": "expert",
+  "vision": "A booking site for a small bakery where customers browse the menu, reserve a pickup slot for cakes and pastries, and leave a note; the owner manages products, opening hours and incoming reservations from a simple admin area, receives an email for each booking, and can close days when the bakery is on holiday.",
+  "targetUsers": "Local customers and the bakery owner.",
+  "features": {
+    "mustHave": ["menu", "reservations", "admin", "opening hours"],
+    "niceToHave": ["gallery"]
+  },
+  "stack": { "frontend": "next", "backend": "none", "database": "sqlite" },
+  "layout": { "repo": "monorepo", "docs": "root", "dbScripts": "separate" },
+  "integrations": [
+    { "name": "email (SMTP)", "envKeys": ["SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD"] }
+  ]
+}
