@@ -54,7 +54,12 @@ Only run after the user has **explicitly approved** the Project Brief.
    or `apps/` layout) as the Brief specifies.
 6. Add base tooling agreed in the workflow phase (formatter, linter, git hooks,
    Docker) using verified commands.
-7. Hand off to `repo-docs` to generate and lock the constitution.
+7. Install the **pre-commit secret guard**: copy
+   `references/precommit/secret-guard.js` into the project (e.g.
+   `scripts/secret-guard.js`) and wire it into the pre-commit hook as described
+   in `references/precommit/README.md`. It blocks committing a real `.env` or an
+   obvious secret, and is pure Node (cross-platform).
+8. Hand off to `repo-docs` to generate and lock the constitution.
 
 ## Cross-platform notes
 
