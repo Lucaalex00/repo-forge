@@ -59,7 +59,7 @@ test('every command .md has frontmatter with a description', (t) => {
 
 test('per-stack CLAUDE.md templates all exist', (t) => {
   const dir = path.join(ROOT, 'skills', 'repo-docs', 'templates', 'claude-md');
-  const expected = ['angular', 'react', 'nextjs', 'vue', 'dotnet', 'nest-express', 'fastapi', 'django', 'laravel'];
+  const expected = ['angular', 'react', 'nextjs', 'vue', 'sveltekit', 'astro', 'dotnet', 'nest-express', 'fastapi', 'django', 'laravel', 'go', 'symfony'];
   for (const name of expected) {
     const f = path.join(dir, name + '.md');
     t.ok(fs.existsSync(f), `missing template ${name}.md`);
