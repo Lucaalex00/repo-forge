@@ -80,25 +80,59 @@ Notes:
 
 ## 6. Phase D — Automated tests
 
-- `tests/` runs with `npm test` (Node only, no dependencies): **46 tests, 102
+- `tests/` runs with `npm test` (Node only, no dependencies): **50 tests, 106
   assertions, all passing**.
 - Coverage: locked/unlocked files, expired unlock, scoped unlock, relative,
   absolute and Windows backslash paths, bash write operators (`>`, `>>`, `tee`,
   `sed -i`, `rm`, `mv`), PowerShell cmdlets (`Set-Content`, `Out-File`,
-  `Remove-Item`), innocent reads (`cat`, `Get-Content`, `grep`), malformed
-  stdin, and plugin JSON/frontmatter validation (including all templates).
-- CI: `.github/workflows/test.yml` runs validator + tests on Node 18/20/22.
+  `Remove-Item`), interpreter write one-liners (`python open(...,'w')`,
+  `node writeFileSync`, `php file_put_contents`) with their read counterparts
+  confirmed *not* flagged, innocent reads (`cat`, `Get-Content`, `grep`),
+  malformed stdin, and plugin JSON/frontmatter validation (including all templates).
+- CI: `.github/workflows/test.yml` runs validator + tests on **Ubuntu (Node
+  18/20/22) and Windows (Node 20)**.
 
-## 7. Open items / manual verification on the user's Windows PC
+## 7. Phase F — Deep verification in a real Claude Code session
 
-- **.NET scaffolding** (scenario 2 backend) — run `dotnet new webapi` and
-  `dotnet build` on a machine with the SDK; confirm the SQL Server connection
-  string lives only in `.env`.
-- **Composer stacks** (Laravel/Symfony) — verify on a machine where Composer is
-  enabled.
-- **End-to-end install** — run `claude plugin marketplace add` +
-  `claude plugin install` on Windows and confirm the hook fires inside a real
-  scaffolded project (the logic is covered by the spawn tests, but the live
-  install path should be smoke-tested once).
-- **Icon** — add a 512px+ PNG icon to clear the remaining validator warning
-  before any public listing.
+Beyond spawning `guard-locked.js` directly, the plugin was loaded into real
+headless `claude` sessions (`claude -p --plugin-dir /home/user/repo-forge`) to
+prove the hook wiring (`hooks.json` + `${CLAUDE_PLUGIN_ROOT}` + exit 2) fires in
+the actual harness. Ground truth was the file's md5 before/after, not the
+model's narration.
+
+| Test (real session) | Expected | Result |
+| --- | --- | --- |
+| Edit tool on a locked file | blocked, file unchanged | ✅ blocked; model pointed to `/repo-forge:change` |
+| Bash `echo >>` on a locked file | blocked | ✅ blocked; model refused to circumvent |
+| `python3 -c "open(...,'a')"` on a locked file | blocked | ✅ blocked |
+| Edit tool on an **unlocked** file | succeeds | ✅ changed (no over-block) |
+| Edit within a valid 10-min unlock window | succeeds | ✅ changed |
+| `/repo-forge:check` slash command | recognized & runs | ✅ recognized and executing (hit the turn cap mid-checklist) |
+
+Plugin install path was also smoke-tested end-to-end: `claude plugin marketplace
+add` → `claude plugin install repo-forge@repo-forge` → **enabled, v1.1.0**, and
+`claude plugin validate . --profile directory` passes with **no warnings** after
+adding the icon.
+
+Laravel backend (relevant to scenarios 2/4) was scaffolded for real once the
+download completed: `composer create-project laravel/laravel` → Laravel 13.39.0;
+`./vendor/bin/pint --test` **passed**; `php artisan test` **2/2 passed**. This
+validates the `laravel.md` template commands.
+
+## 8. Open items / manual verification on the user's Windows PC
+
+- **.NET scaffolding** (scenario 2 backend) — **could not be verified here**:
+  the container's egress proxy blocks the .NET SDK download
+  (`builds.dotnet.microsoft.com` is not allowed), so `dotnet` cannot be
+  installed. Run `dotnet new webapi` + `dotnet build` on the Windows PC and
+  confirm the SQL Server connection string lives only in `.env`.
+- **Symfony** — not tested (Laravel was). Verify `symfony new` / Composer
+  skeleton on the Windows PC when needed.
+- **Live install on Windows** — the install path was smoke-tested in this
+  (Linux) container and the hook was proven to fire in a real `claude` session;
+  re-run `claude plugin marketplace add Lucaalex00/repo-forge` +
+  `claude plugin install` once on the Windows PC to confirm the same end-to-end
+  there.
+
+Resolved during this session (previously open): the 512px icon was added (the
+validator now passes with no warnings), and Laravel was scaffolded and tested.
