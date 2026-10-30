@@ -10,6 +10,15 @@ Hardening and test release: made the plugin conformant to the current Claude
 Code plugin schema, verified end-to-end, and added automated tests.
 
 ### Added
+- **Non-interactive spec mode** (agentic / low-token): a `repoforge.config.json`
+  pre-answers the interview; `/repo-forge:new-repo` detects it, validates it with
+  `scripts/spec.js` (the 50-word vision gate still applies, plus cross-field
+  checks) and goes straight to Brief → scaffold → docs → lock. Schema and example
+  under `skills/repo-interview/references/`.
+- **Cross-model support**: an `AGENTS.md` is generated alongside `CLAUDE.md` so
+  Codex and other agents see the same rules, and a **portable git pre-commit
+  `lock-guard.js`** enforces the structure lock for any tool (Codex, manual
+  commits, CI), not only Claude Code's hook.
 - **Two interview paths**: Beginner ("decide for me", mostly fixed-choice
   questions with recommended defaults) and Expert ("I drive", open questions,
   full control). `/repo-forge:new-repo [beginner|expert]` selects one; the

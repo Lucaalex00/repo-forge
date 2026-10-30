@@ -80,9 +80,9 @@ Notes:
 
 ## 6. Phase D — Automated tests
 
-- `tests/` runs with `npm test` (Node only, no dependencies): **72 tests, 155
-  assertions, all passing** (includes `scripts/lock.js`, `unlock.js`,
-  `verify.js` and `adr.js`).
+- `tests/` runs with `npm test` (Node only, no dependencies): **86 tests, all
+  passing** (includes `scripts/lock.js`, `unlock.js`, `verify.js`, `adr.js`,
+  `spec.js` and the portable `lock-guard.js`).
 - Coverage: locked/unlocked files, expired unlock, scoped unlock, relative,
   absolute and Windows backslash paths, bash write operators (`>`, `>>`, `tee`,
   `sed -i`, `rm`, `mv`), PowerShell cmdlets (`Set-Content`, `Out-File`,
@@ -155,6 +155,21 @@ Added after the first pass, per the user's request for distinct **Beginner** and
 - **Slash menu**: helper skills set to `user-invocable: false`, so only
   `new-repo`, `change` and `check` appear in `/` (verified against the live
   skill listing).
+
+## 7d. Non-interactive spec mode (agentic) and cross-model support
+
+- **Spec mode (`repoforge.config.json`).** `scripts/spec.js` validates a spec
+  (50-word vision gate enforced; defaults + cross-field checks). Verified in a
+  real session: `/repo-forge:new-repo` Phase 0 detected and validated the spec,
+  parsed every field, and confirmed it would skip the interview. A dogfooding
+  critique surfaced a real gap — `dbScripts: "backend"` with `backend: "none"` —
+  now a cross-field warning. This is the low-token / agent-friendly path.
+- **Cross-model.** `AGENTS.md` is generated alongside `CLAUDE.md` (and locked).
+  The portable `lock-guard.js` pre-commit hook was installed into a throwaway git
+  repo via `core.hooksPath` and a real `git commit` touching a locked file was
+  **rejected** (exit 1), while an unlocked-file commit succeeded — so the
+  structure lock holds for Codex, manual commits and CI, not just Claude Code.
+  Unit + e2e tested.
 
 ## 8. Open items / manual verification on the user's Windows PC
 

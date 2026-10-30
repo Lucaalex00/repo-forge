@@ -93,6 +93,22 @@ GitHub).
 | `/repo-forge:check` | Checklist di verifica finale (esegue un controllo deterministico: `locked.json`, file presenti, costituzione completa, ≥10 regole, `.env` ignorato, nessun placeholder). |
 | `/repo-forge:check adopt` | **Adozione**: applica Repo Forge a un repository **già esistente** (deduce stack e convenzioni dal codice, genera i documenti dal repo reale e li blocca). |
 
+## Modalità veloce / agentica (senza intervista)
+
+Per chi sa già cosa vuole (o per un agente), metti un `repoforge.config.json`
+nella cartella di destinazione: `/repo-forge:new-repo` lo rileva, lo valida
+(`scripts/spec.js`, con il gate delle 50 parole sempre attivo) e salta
+l'intervista, andando diritto a Brief → scaffolding → documenti → lock. Schema
+e esempio in `skills/repo-interview/references/`. È il percorso che consuma meno
+token.
+
+## Altri modelli (Codex ecc.)
+
+Oltre a `CLAUDE.md`, viene generato un **`AGENTS.md`** con le stesse regole, letto
+da Codex e altri agenti. E un **hook git `pre-commit` di lock portabile**
+(`lock-guard.js`, Node) fa rispettare il blocco della struttura a **qualsiasi**
+strumento — altri agenti, commit manuali, CI — non solo a Claude Code.
+
 ## Come funziona il "lock"
 
 I file costituzione elencati in `.repoforge/locked.json` (nel tuo progetto) non
