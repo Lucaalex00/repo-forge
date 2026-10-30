@@ -80,8 +80,9 @@ Notes:
 
 ## 6. Phase D — Automated tests
 
-- `tests/` runs with `npm test` (Node only, no dependencies): **58 tests, 132
-  assertions, all passing** (includes `scripts/lock.js` and `scripts/unlock.js`).
+- `tests/` runs with `npm test` (Node only, no dependencies): **72 tests, 155
+  assertions, all passing** (includes `scripts/lock.js`, `unlock.js`,
+  `verify.js` and `adr.js`).
 - Coverage: locked/unlocked files, expired unlock, scoped unlock, relative,
   absolute and Windows backslash paths, bash write operators (`>`, `>>`, `tee`,
   `sed -i`, `rm`, `mv`), PowerShell cmdlets (`Set-Content`, `Out-File`,
@@ -136,6 +137,24 @@ Added after the first pass, per the user's request for distinct **Beginner** and
 - **Pre-commit secret guard** template. Verified in a throwaway git repo: a real
   `.env` is blocked, `.env.example` + clean code pass, a staged AWS-style key is
   blocked. Pure Node, so it runs on Windows too.
+
+## 7c. Full command lifecycle, verify.js, and helper tooling
+
+- **`/repo-forge:change` end-to-end (real session).** On a project with a locked
+  `ARCHITECTURE.md`: the command created `docs/adr/0001-*.md` via `adr.js`,
+  opened a scoped 10-minute unlock, edited the file (SQLite → PostgreSQL),
+  updated `CHANGELOG.md`, then removed `unlock.json`. Ground truth confirmed: file
+  changed, ADR present, unlock token gone, and the guard blocks the file again
+  (exit 2). Full lock → change → re-lock lifecycle verified.
+- **`/repo-forge:check` (real session)** runs `verify.js` and reports a checklist.
+  A model critique during this test revealed `verify.js` only checked locked-file
+  integrity; it now also checks constitution completeness (core docs present,
+  layout-agnostic) and rule count (≥10), reducing reliance on the model.
+- **`scripts/adr.js`** and **`scripts/verify.js`** are unit-tested; the four DB
+  **Compose templates** parse as valid YAML.
+- **Slash menu**: helper skills set to `user-invocable: false`, so only
+  `new-repo`, `change` and `check` appear in `/` (verified against the live
+  skill listing).
 
 ## 8. Open items / manual verification on the user's Windows PC
 

@@ -90,7 +90,7 @@ GitHub).
 | --- | --- |
 | `/repo-forge:new-repo [cartella]` | Avvia il flusso completo: intervista → stack → regole → workflow → Brief → scaffolding → documenti + lock → check. |
 | `/repo-forge:change [cosa cambiare]` | Unico modo sicuro per modificare un file bloccato: ADR + approvazione + finestra di sblocco temporanea (10 minuti), poi ri-blocca. |
-| `/repo-forge:check` | Checklist di verifica finale del repository. |
+| `/repo-forge:check` | Checklist di verifica finale (esegue un controllo deterministico: `locked.json`, file presenti, costituzione completa, ≥10 regole, `.env` ignorato, nessun placeholder). |
 | `/repo-forge:check adopt` | **Adozione**: applica Repo Forge a un repository **già esistente** (deduce stack e convenzioni dal codice, genera i documenti dal repo reale e li blocca). |
 
 ## Come funziona il "lock"

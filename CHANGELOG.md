@@ -17,6 +17,16 @@ Code plugin schema, verified end-to-end, and added automated tests.
 - **Deterministic lock/unlock helpers** `scripts/lock.js` and `scripts/unlock.js`,
   invoked by `/repo-forge:new-repo` and `/repo-forge:change`, so `locked.json`
   and the 10-minute unlock window are written by code, not hand-typed.
+- **`scripts/verify.js`** — deterministic project health check used by
+  `/repo-forge:check` (locked.json integrity, locked files exist, constitution
+  completeness, ≥10 rules, no stale unlock, `.env` ignored/untracked, no
+  placeholders), so the check is fast and reliable instead of model-only.
+- **`scripts/adr.js`** — creates the next-numbered ADR for `/repo-forge:change`
+  so numbering never collides.
+- **Docker Compose templates** for server databases (PostgreSQL, MySQL, SQL
+  Server, MongoDB) wired to `.env`, under `repo-scaffolder/references/db-compose/`.
+- Helper skills (interview, advisors, scaffolder, docs, adopt) are now
+  `user-invocable: false` — the `/` menu shows only `new-repo`, `change`, `check`.
 - **Pre-commit secret guard** template (`skills/repo-scaffolder/references/
   precommit/`) installed into generated projects to block committing `.env` or
   obvious secrets; cross-platform (pure Node).
