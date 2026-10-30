@@ -1,5 +1,6 @@
 ---
 name: repo-scaffolder
+user-invocable: false
 description: Scaffold the project with official CLIs according to the approved layout (monorepo vs separate repos; docs and DB-script locations), then wire up .env, .gitignore and base config. Use after the Project Brief is approved, inside /repo-forge:new-repo.
 ---
 
@@ -49,7 +50,11 @@ Only run after the user has **explicitly approved** the Project Brief.
 2. Scaffold the frontend (and/or full-stack framework) with its official CLI.
 3. Scaffold the backend if separate.
 4. Set up the database per the choice (SQLite file + ORM by default; server DB
-   wired via `.env`). Place DB scripts in the chosen location.
+   wired via `.env`). Place DB scripts in the chosen location. For a **server
+   database**, copy the matching Compose template from
+   `references/db-compose/` into the project and add its keys to `.env` /
+   `.env.example` (see that folder's `README.md` for keys and connection
+   strings). Confirm the image tag on Docker Hub.
 5. For a monorepo, set up the workspace (e.g. npm/pnpm workspaces, a `packages/`
    or `apps/` layout) as the Brief specifies.
 6. Add base tooling agreed in the workflow phase (formatter, linter, git hooks,

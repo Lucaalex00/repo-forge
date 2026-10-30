@@ -1,5 +1,6 @@
 ---
 name: repo-docs
+user-invocable: false
 description: Generate the separate "constitution" documents (PROJECT_BRIEF, ARCHITECTURE, GUIDELINES, GUARDRAILS, CONVENTIONS, WORKFLOW, CHANGELOG, ADRs, and CLAUDE.md at the root and per part) filled from the real decisions, then lock them via .repoforge/locked.json. Use at the end of /repo-forge:new-repo after scaffolding.
 ---
 

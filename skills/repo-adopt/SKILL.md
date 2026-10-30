@@ -1,5 +1,6 @@
 ---
 name: repo-adopt
+user-invocable: false
 description: Bring an already-existing repository under Repo Forge governance — infer the real stack/layout/conventions from the code, run a short confirming interview, generate the constitution documents from the actual repo, and lock them. Use for /repo-forge:check adopt, never for a brand-new project.
 ---
 

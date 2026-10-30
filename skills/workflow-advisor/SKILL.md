@@ -1,5 +1,6 @@
 ---
 name: workflow-advisor
+user-invocable: false
 description: Recommend working methods and tooling (state management, testing, MCP servers, git hooks, containers) for the project, and verify every install command on the web before presenting it. Use after rules-advisor, inside /repo-forge:new-repo.
 ---
 

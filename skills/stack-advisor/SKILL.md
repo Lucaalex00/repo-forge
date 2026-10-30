@@ -1,5 +1,6 @@
 ---
 name: stack-advisor
+user-invocable: false
 description: Recommend a Frontend, Backend and Database stack separately, with justification, based on the interview answers. Defaults the database to SQLite; server databases only when the user provides credentials (kept in .env). Use after repo-interview, inside /repo-forge:new-repo.
 ---
 

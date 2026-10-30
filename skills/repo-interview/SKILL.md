@@ -1,5 +1,6 @@
 ---
 name: repo-interview
+user-invocable: false
 description: Deep intake interview for a new web repository, with two paths — Beginner ("decide for me", mostly fixed-choice questions) and Expert ("I drive", open questions) — covering vision, features, non-functional requirements, constraints, repo layout, stack preferences and working rules. Use at the start of /repo-forge:new-repo, or whenever the user wants to define a new project from scratch.
 ---
 

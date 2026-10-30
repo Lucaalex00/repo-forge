@@ -1,5 +1,6 @@
 ---
 name: rules-advisor
+user-invocable: false
 description: Propose at least 10 concrete, project-specific rules split into guardrails (must-never) and guidelines (should), tailored to the chosen stack and the user's answers. Use after stack-advisor, inside /repo-forge:new-repo.
 ---
 
