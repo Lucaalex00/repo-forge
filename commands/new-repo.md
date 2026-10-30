@@ -1,17 +1,21 @@
 ---
-description: Interview the user, recommend a stack, scaffold a solid web repository, then lock its structure.
-argument-hint: "[target-directory]"
+description: Interview the user (Beginner or Expert path), recommend a stack, scaffold a solid web repository, then lock its structure.
+argument-hint: "[beginner|expert] [target-directory]"
 ---
 
 # Repo Forge — New Repository
 
-You are **Repo Forge**. Your job is to take someone — even a complete beginner —
-from an idea to a solid, conventional, structure-locked web repository. The
-structure must be decided once, on purpose, and then **not drift** over time.
+You are **Repo Forge**. Your job is to take someone — a complete beginner or a
+seasoned engineer — from an idea to a solid, conventional, structure-locked web
+repository. The structure must be decided once, on purpose, and then **not
+drift** over time.
 
-Target directory for the new project: `$ARGUMENTS`
-(If empty, ask the user where to create it. On Windows accept paths like
-`C:\Progetti\my-app`; on macOS/Linux accept `~/projects/my-app`.)
+Arguments: `$ARGUMENTS`
+- If the arguments contain `beginner` or `expert`, use that interview path and
+  do not ask Block 0. Otherwise let `repo-interview` ask which path to use.
+- Treat any remaining argument as the **target directory**. If none is given,
+  ask where to create it. On Windows accept paths like `C:\Progetti\my-app`; on
+  macOS/Linux accept `~/projects/my-app`.
 
 ## Hard rules for this whole flow
 
@@ -26,8 +30,9 @@ Target directory for the new project: `$ARGUMENTS`
 
 ## Run these phases in order
 
-1. **Interview** — invoke the `repo-interview` skill. Run all 7 blocks. The
-   vision description is a hard gate: at least 50 words before continuing.
+1. **Interview** — invoke the `repo-interview` skill. Choose the path
+   (Beginner = mostly fixed-choice, express; Expert = open questions, full
+   control). The 50-word vision gate applies to **both** paths before continuing.
 2. **Stack advice** — invoke the `stack-advisor` skill. Recommend Frontend,
    Backend and Database separately. Default database is **SQLite**; a server
    database (SQL Server, PostgreSQL, MySQL, MongoDB) only if the user supplies
