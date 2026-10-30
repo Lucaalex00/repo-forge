@@ -14,8 +14,17 @@ Mode: `$ARGUMENTS`
 
 ## Verification checklist (default)
 
-Go through every item, mark ✅ / ❌, and show the user a summary. Do not claim a
-check passed unless you actually verified it.
+First run the deterministic checker, then review its output and add the parts it
+cannot do (build/lint):
+
+```bash
+node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.js" --dir .
+```
+
+It covers items 1–6 mechanically (locked.json integrity, locked files exist, no
+stale unlock, `.env` ignored/untracked, `.env.example` present, no leftover
+placeholders). Then go through every item below, mark ✅ / ❌, and show the user a
+summary. Do not claim a check passed unless you actually verified it.
 
 1. **Structure present** — the chosen layout exists (monorepo vs separate
    repos; FE/BE folders; docs location; DB scripts location) as decided in the

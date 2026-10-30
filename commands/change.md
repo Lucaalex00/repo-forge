@@ -17,10 +17,16 @@ Follow this procedure exactly:
    Read them first. If the change does not actually require editing a locked
    file, do it normally and stop here.
 
-2. **Write an ADR.** Create the next `docs/adr/NNNN-*.md` (Architecture
-   Decision Record) describing: context, the decision, considered
-   alternatives, and consequences. The ADR itself is a new file, so it is not
-   blocked.
+2. **Write an ADR.** Create the next-numbered record with the helper (it picks
+   the number and slug and prints the path):
+
+   ```bash
+   node "${CLAUDE_PLUGIN_ROOT}/scripts/adr.js" --dir . --title "<decision title>"
+   ```
+
+   Then fill in its Context / Decision / Alternatives / Consequences sections.
+   The ADR is a new file, so it is not blocked. Use the printed path for `--adr`
+   in step 4.
 
 3. **Get explicit approval.** Show the ADR and the exact diff you intend to
    apply to the locked file(s). Ask the user to approve in plain words. Do not
