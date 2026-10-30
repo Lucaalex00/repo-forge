@@ -30,6 +30,14 @@ notifications? file upload? i18n? public vs private content?). For the bakery
 example: menu, bookings/reservations, contact, gallery, opening hours, admin to
 manage bookings.
 
+Also capture, briefly:
+- **Core data / entities** — the main things the app stores and how they relate
+  (e.g. Booking → Customer, Product). This drives the database and stack choice.
+- **Third-party integrations** — payments (Stripe…), email/SMS, maps, auth
+  providers, analytics, CMS. Each integration usually needs an API key, which
+  will go in `.env`; note them now so the scaffolder and `.env.example` include
+  them.
+
 ## Block 3 — Non-functional requirements
 
 Expected traffic/scale, performance expectations, availability, SEO needs,

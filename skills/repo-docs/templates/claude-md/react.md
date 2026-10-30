@@ -33,7 +33,7 @@ src/
 | Install | `npm install` |
 | Dev | `npm run dev` |
 | Build | `npm run build` |
-| Lint | `npm run lint` |
+| Lint | `npm run lint` (confirm it targets `src`; some templates ship `oxlint`/`eslint` and need a path or config to lint anything) |
 | Test | `npm test` |
 
 ## Must / must-not

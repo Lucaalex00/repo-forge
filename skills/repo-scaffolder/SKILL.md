@@ -25,6 +25,23 @@ Only run after the user has **explicitly approved** the Project Brief.
 - After scaffolding, run the stack's **install**, **build** and **lint** to
   prove the skeleton works; report the real output. If a step fails, fix it or
   report it honestly — do not claim success you did not verify.
+- **Verify the generated lint/test scripts actually run.** Some starter
+  templates ship a `lint` script that fails on a fresh project (observed: the
+  current Vite React template wires `lint` to `oxlint`, which exits non-zero
+  with "No files found to lint" until a path/config is set). When a default
+  script is broken, repair it (add the missing path/config) or replace it with a
+  working setup, and record what you changed — do not leave a red `npm run lint`.
+
+## Before you scaffold: check prerequisites
+
+- Check tool versions against what each CLI requires **before** running it.
+  Framework CLIs can be strict about the exact runtime — e.g. the Angular CLI
+  refuses to run on a Node version even a patch behind its minimum. If the
+  installed version is too old, either update it or pin the CLI to a version
+  that supports the installed runtime (e.g. `@angular/cli@19`), and say which.
+- Confirm the package managers and SDKs the chosen stack needs are installed
+  (`node`, `dotnet`, `python`, `php`/`composer`, …). If one is missing, tell the
+  user how to install it instead of guessing.
 
 ## Procedure
 
