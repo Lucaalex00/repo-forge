@@ -27,6 +27,7 @@ template verbatim.
 | `CHANGELOG.md` | Keep-a-Changelog format; start at Unreleased. |
 | `docs/adr/0001-record-architecture-decisions.md` | First ADR (adopt ADRs). |
 | `CLAUDE.md` (root) | Project-wide instructions for Claude Code. |
+| `AGENTS.md` (root) | Cross-agent instructions (Codex et al.) mirroring the rules — template `templates/AGENTS.md`. |
 | `<part>/CLAUDE.md` | One per part (frontend, backend, database, …). |
 
 Place the files according to the **approved docs location** (root / under FE /
@@ -50,7 +51,7 @@ project's actual choices; delete rows that do not apply.
 
    ```bash
    node "${CLAUDE_PLUGIN_ROOT}/scripts/lock.js" --dir . \
-     --files "PROJECT_BRIEF.md,ARCHITECTURE.md,GUIDELINES.md,GUARDRAILS.md,CONVENTIONS.md,WORKFLOW.md,CLAUDE.md,frontend/CLAUDE.md,backend/CLAUDE.md"
+     --files "PROJECT_BRIEF.md,ARCHITECTURE.md,GUIDELINES.md,GUARDRAILS.md,CONVENTIONS.md,WORKFLOW.md,CLAUDE.md,AGENTS.md,frontend/CLAUDE.md,backend/CLAUDE.md"
    ```
 
    Adjust the list and paths to the real files and chosen layout. See

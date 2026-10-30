@@ -59,11 +59,14 @@ Only run after the user has **explicitly approved** the Project Brief.
    or `apps/` layout) as the Brief specifies.
 6. Add base tooling agreed in the workflow phase (formatter, linter, git hooks,
    Docker) using verified commands.
-7. Install the **pre-commit secret guard**: copy
-   `references/precommit/secret-guard.js` into the project (e.g.
-   `scripts/secret-guard.js`) and wire it into the pre-commit hook as described
-   in `references/precommit/README.md`. It blocks committing a real `.env` or an
-   obvious secret, and is pure Node (cross-platform).
+7. Install the **pre-commit guards**: copy `references/precommit/secret-guard.js`
+   and `references/precommit/lock-guard.js` into the project (e.g. under
+   `scripts/`) and wire both into the pre-commit hook as described in
+   `references/precommit/README.md`. The secret guard blocks committing a real
+   `.env` or an obvious secret; the lock guard enforces the structure lock for
+   any tool (Codex, manual commits, CI), not just Claude Code. Both are pure
+   Node (cross-platform). Also copy `scripts/unlock.js` into the project if you
+   want non-Claude agents to open/close unlock windows.
 8. Hand off to `repo-docs` to generate and lock the constitution.
 
 ## Cross-platform notes

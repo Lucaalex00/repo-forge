@@ -69,6 +69,13 @@ test('per-stack CLAUDE.md templates all exist', (t) => {
 
 test('constitution document templates all exist', (t) => {
   const dir = path.join(ROOT, 'skills', 'repo-docs', 'templates');
-  const expected = ['PROJECT_BRIEF.md', 'ARCHITECTURE.md', 'GUIDELINES.md', 'GUARDRAILS.md', 'CONVENTIONS.md', 'WORKFLOW.md', 'CHANGELOG.md', 'CLAUDE.root.md'];
+  const expected = ['PROJECT_BRIEF.md', 'ARCHITECTURE.md', 'GUIDELINES.md', 'GUARDRAILS.md', 'CONVENTIONS.md', 'WORKFLOW.md', 'CHANGELOG.md', 'CLAUDE.root.md', 'AGENTS.md'];
   for (const f of expected) t.ok(fs.existsSync(path.join(dir, f)), `missing template ${f}`);
+});
+
+test('pre-commit guard templates exist', (t) => {
+  const dir = path.join(ROOT, 'skills', 'repo-scaffolder', 'references', 'precommit');
+  for (const f of ['secret-guard.js', 'lock-guard.js', 'README.md']) {
+    t.ok(fs.existsSync(path.join(dir, f)), `missing ${f}`);
+  }
 });
