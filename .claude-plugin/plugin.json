@@ -9,6 +9,7 @@
   "homepage": "https://github.com/Lucaalex00/repo-forge",
   "repository": "https://github.com/Lucaalex00/repo-forge",
   "license": "MIT",
+  "icon": "./.claude-plugin/icon.png",
   "keywords": [
     "scaffold",
     "repository",
