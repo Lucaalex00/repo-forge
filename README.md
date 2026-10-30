@@ -1,63 +1,60 @@
-# Repo Forge
+<p align="center">
+  <img src=".claude-plugin/icon.png" alt="Repo Forge logo" width="128" height="128" />
+</p>
 
-Repo Forge è un plugin per **Claude Code** che ti accompagna dall'idea a un
-repository web solido e **con una struttura che non cambia nel tempo**. Fa
-un'intervista approfondita, ti consiglia lo stack, propone regole su misura,
-genera i documenti "costituzione" del progetto e poi **li blocca**: da quel
-momento le modifiche alla struttura passano da una procedura controllata, non
-avvengono per caso.
+<h1 align="center">Repo Forge</h1>
 
-Funziona sia nella CLI di Claude Code sia nell'estensione VS Code. È pensato per
-essere installato **a livello utente** (`~/.claude`), così è disponibile in
-tutti i tuoi progetti.
+<p align="center"><em>Dall'idea a un repository web solido, con una struttura che non cambia nel tempo.</em></p>
 
-## Cosa fa, in breve
+<p align="center">
+  <img src="https://img.shields.io/badge/version-1.1.0-blue" alt="version" />
+  <a href="https://github.com/Lucaalex00/repo-forge/actions/workflows/test.yml"><img src="https://github.com/Lucaalex00/repo-forge/actions/workflows/test.yml/badge.svg?branch=main" alt="CI" /></a>
+  <img src="https://img.shields.io/badge/tests-89%20passing-brightgreen" alt="tests" />
+  <img src="https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2" alt="Claude Code plugin" />
+  <img src="https://img.shields.io/badge/cross--model-AGENTS.md-informational" alt="cross-model" />
+  <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
+</p>
 
-1. **Intervista** con due percorsi a scelta:
-   - **Principiante** ("decidi tu"): poche domande a risposta fissa con default
-     consigliati, linguaggio semplice, il resto deciso in automatico;
-   - **Esperto** ("guido io"): domande aperte, controllo diretto di stack,
-     versioni e layout.
-   In entrambi i casi la **visione** ha un gate obbligatorio di almeno 50 parole;
-   poi funzionalità, requisiti non funzionali, vincoli, layout, stack e regole.
-2. **Consiglio sullo stack** separato per Frontend, Backend e Database. Il
-   database di default è **SQLite**; i database server (SQL Server, PostgreSQL,
-   MySQL, MongoDB) solo se fornisci le credenziali, che finiscono **solo** nel
-   file `.env`.
-3. **Almeno 10 regole** su misura (guardrail + guideline), che puoi modificare.
-4. **Consigli su metodi e strumenti** (state management, Playwright/Playwright
-   MCP, Context7 MCP, GitHub MCP, Husky/pre-commit, Docker…). I comandi di
-   installazione vengono verificati, non inventati.
-5. **Project Brief** con osservazioni, rischi e decisioni delegate a te. Si
-   procede **solo** dopo la tua approvazione esplicita.
-6. **Scaffolding** con le CLI ufficiali, nel layout che scegli tu (monorepo o
-   repo separati; docs alla root / sotto il frontend / sotto il backend / in un
-   repo dedicato; script DB dentro il backend o in una cartella separata).
-7. **Documenti costituzione** separati (`PROJECT_BRIEF`, `ARCHITECTURE`,
-   `GUIDELINES`, `GUARDRAILS`, `CONVENTIONS`, `WORKFLOW`, `CHANGELOG`, ADR, e un
-   `CLAUDE.md` alla root e per ogni parte), poi **bloccati** tramite
-   `.repoforge/locked.json`. Un hook impedisce le modifiche dirette.
-8. **Checklist** di verifica finale.
+---
 
-## Installazione globale (passo passo, Windows)
+## Cos'è
 
-Prerequisiti: avere **Claude Code** installato e funzionante (comando `claude`).
-I percorsi di esempio usano `C:\Progetti`.
+**Repo Forge** è un plugin per **Claude Code** che ti accompagna dall'idea a un
+repository web solido e ben strutturato. Fa un'intervista approfondita, ti
+consiglia lo stack, propone regole su misura, genera i documenti "costituzione"
+del progetto e poi **li blocca**: da quel momento la struttura si cambia solo con
+una procedura controllata, non per caso.
 
-1. Apri **PowerShell**.
-2. **Installa in un passo** (aggiunge il marketplace e installa):
+Funziona nella CLI di Claude Code e nell'estensione VS Code, e si installa **a
+livello utente** (`~/.claude`), così è disponibile in tutti i tuoi progetti.
 
-   ```powershell
-   claude plugin install repo-forge@repo-forge --marketplace Lucaalex00/repo-forge --scope user
-   ```
+### In breve
 
-3. Verifica che sia installato:
+- 🔒 **Struttura bloccata** — i documenti chiave non si modificano per sbaglio; si cambiano via `/repo-forge:change` (ADR + approvazione + sblocco di 10 minuti).
+- 🧭 **Due percorsi** — *Principiante* ("decidi tu", domande a scelta) ed *Esperto* ("guido io", domande aperte).
+- 🗄️ **SQLite di default** — i database server (PostgreSQL, MySQL, SQL Server, MongoDB) solo se fornisci le credenziali, che finiscono **solo** nel `.env`.
+- 🤝 **Cross-model** — genera anche `AGENTS.md` e un hook git di lock portabile, così le regole valgono pure con Codex, commit manuali e CI.
 
-   ```powershell
-   claude plugin list
-   ```
+---
 
-In due passi (equivalente), oppure da dentro una sessione di Claude Code:
+## Installazione (Windows, PowerShell)
+
+> Prerequisito: avere **Claude Code** (comando `claude`) e **Node.js** sul PATH.
+
+**In un passo** (aggiunge il marketplace e installa a livello utente):
+
+```powershell
+claude plugin install repo-forge@repo-forge --marketplace Lucaalex00/repo-forge --scope user
+```
+
+Verifica che risulti abilitato:
+
+```powershell
+claude plugin list
+```
+
+<details>
+<summary>In due passi, o da dentro una sessione Claude Code</summary>
 
 ```powershell
 claude plugin marketplace add Lucaalex00/repo-forge
@@ -65,93 +62,118 @@ claude plugin install repo-forge@repo-forge --scope user
 ```
 
 Dentro una sessione: `/plugin marketplace add Lucaalex00/repo-forge` e poi
-`/plugin install repo-forge@repo-forge`.
+`/plugin install repo-forge@repo-forge`. Per fissare una versione:
+`claude plugin marketplace add Lucaalex00/repo-forge#<commit-o-branch>`.
+</details>
 
-Per fissare una versione specifica puoi puntare a un commit o a un branch:
-`claude plugin marketplace add Lucaalex00/repo-forge#<commit-o-branch>`
-(una release taggata potrà essere aggiunta in seguito dalla sezione Releases di
-GitHub).
+### Aggiornare / disinstallare
 
-> **Provarlo senza installarlo** (utile per svilupparlo): da una copia locale
-> del repository esegui `claude --plugin-dir .` in quella cartella.
+```powershell
+claude plugin marketplace update repo-forge
+claude plugin update repo-forge@repo-forge
+claude plugin uninstall repo-forge
+```
 
-### Note per Windows
+---
 
-- Tutto il plugin è scritto in Node puro e usa percorsi cross-platform, quindi
-  l'hook di blocco funziona sia con percorsi `C:\...` sia POSIX, e riconosce sia
-  i comandi di scrittura bash sia quelli PowerShell.
-- Serve **Node.js** sul PATH (lo stesso che usa Claude Code). Alcune CLI di
-  scaffolding sono esigenti sulla versione di Node: Repo Forge la controlla
-  prima di procedere e, se serve, usa una versione compatibile della CLI.
+## Avvio rapido — crea un repo da zero
+
+1. Crea una cartella vuota e aprici Claude Code:
+
+   ```powershell
+   mkdir C:\Progetti\mio-sito; cd C:\Progetti\mio-sito
+   ```
+
+2. Nella sessione Claude Code, lancia:
+
+   ```text
+   /repo-forge:new-repo
+   ```
+
+3. Scegli **Principiante** o **Esperto**. In entrambi i casi parti dal gate
+   delle 50 parole sulla visione, poi: stack → regole → workflow → **Project
+   Brief** (da approvare) → scaffolding → documenti → **lock** → check finale.
+
+> **Scorciatoia agentica / pochi token:** metti nella cartella un
+> `repoforge.config.json` (schema ed esempio in
+> `skills/repo-interview/references/`) e `/repo-forge:new-repo` salta
+> l'intervista, andando diritto allo scaffolding.
+
+---
 
 ## Comandi
 
 | Comando | Cosa fa |
 | --- | --- |
-| `/repo-forge:new-repo [cartella]` | Avvia il flusso completo: intervista → stack → regole → workflow → Brief → scaffolding → documenti + lock → check. |
-| `/repo-forge:change [cosa cambiare]` | Unico modo sicuro per modificare un file bloccato: ADR + approvazione + finestra di sblocco temporanea (10 minuti), poi ri-blocca. |
-| `/repo-forge:check` | Checklist di verifica finale (esegue un controllo deterministico: `locked.json`, file presenti, costituzione completa, ≥10 regole, `.env` ignorato, nessun placeholder). |
-| `/repo-forge:check adopt` | **Adozione**: applica Repo Forge a un repository **già esistente** (deduce stack e convenzioni dal codice, genera i documenti dal repo reale e li blocca). |
+| `/repo-forge:new-repo [beginner\|expert] [cartella]` | Flusso completo: intervista → stack → regole → workflow → Brief → scaffolding → documenti + lock → check. |
+| `/repo-forge:change [cosa cambiare]` | Unico modo sicuro per modificare un file bloccato: ADR + approvazione + finestra di sblocco di 10 minuti, poi ri-blocca. |
+| `/repo-forge:check` | Verifica finale (controllo deterministico: `locked.json`, file presenti, costituzione completa, ≥10 regole, `.env` ignorato, nessun placeholder). |
+| `/repo-forge:check adopt` | **Adozione**: applica Repo Forge a un repository **già esistente**, deducendo stack e convenzioni dal codice reale. |
 
-## Modalità veloce / agentica (senza intervista)
-
-Per chi sa già cosa vuole (o per un agente), metti un `repoforge.config.json`
-nella cartella di destinazione: `/repo-forge:new-repo` lo rileva, lo valida
-(`scripts/spec.js`, con il gate delle 50 parole sempre attivo) e salta
-l'intervista, andando diritto a Brief → scaffolding → documenti → lock. Schema
-e esempio in `skills/repo-interview/references/`. È il percorso che consuma meno
-token.
-
-## Altri modelli (Codex ecc.)
-
-Oltre a `CLAUDE.md`, viene generato un **`AGENTS.md`** con le stesse regole, letto
-da Codex e altri agenti. E un **hook git `pre-commit` di lock portabile**
-(`lock-guard.js`, Node) fa rispettare il blocco della struttura a **qualsiasi**
-strumento — altri agenti, commit manuali, CI — non solo a Claude Code.
+---
 
 ## Come funziona il "lock"
 
 I file costituzione elencati in `.repoforge/locked.json` (nel tuo progetto) non
 si possono modificare direttamente: un hook `PreToolUse` blocca la scrittura e
 spiega perché. Per cambiarli usa `/repo-forge:change`, che scrive un ADR, chiede
-la tua approvazione e crea un `.repoforge/unlock.json` valido 10 minuti; a
-modifica fatta, il file di sblocco viene rimosso e il blocco torna attivo.
-`locked.json` viene committato (il blocco viaggia col repo); `unlock.json` è
-git-ignorato e locale. La creazione di `locked.json` e della finestra di sblocco
-è gestita da script deterministici (`scripts/lock.js`, `scripts/unlock.js`), così
-timestamp e scadenza non dipendono da calcoli a mano.
+la tua approvazione e apre un `.repoforge/unlock.json` valido 10 minuti; a
+modifica fatta, lo sblocco viene rimosso e il blocco torna attivo.
 
-Nei progetti generati viene anche installato un **guard pre-commit anti-segreti**
-(Node, cross-platform) che blocca il commit di file `.env` reali o di chiavi/token
-evidenti.
+`locked.json` è committato (il blocco viaggia col repo); `unlock.json` è
+git-ignorato e locale. Lock, sblocco, ADR e verifica sono gestiti da script
+deterministici (`scripts/lock.js`, `unlock.js`, `adr.js`, `verify.js`), così
+timestamp e scadenze non dipendono da calcoli a mano.
+
+Nei progetti generati vengono anche installati due **guard pre-commit** (Node,
+cross-platform): uno **anti-segreti** (blocca commit di `.env` reali o di
+chiavi/token) e uno di **lock portabile**, che fa rispettare il blocco della
+struttura a qualsiasi strumento — altri agenti, commit manuali, CI — non solo a
+Claude Code.
+
+---
+
+## Altri modelli (Codex ecc.)
+
+Oltre a `CLAUDE.md`, viene generato un **`AGENTS.md`** con le stesse regole, letto
+da Codex e da altri agenti. L'enforcement del lock via hook git `pre-commit`
+funziona indipendentemente dallo strumento che modifica il repo.
+
+---
+
+## Stack supportati
+
+- **Frontend:** React (Vite), Next.js, Vue, Angular, SvelteKit, Astro
+- **Backend:** .NET Web API, NestJS/Express, FastAPI, Django, Laravel, Symfony, Go, oppure full-stack (Next.js/Nuxt/SvelteKit/Laravel/Django) senza backend separato
+- **Database:** SQLite (default), PostgreSQL, MySQL, SQL Server, MongoDB (con template Docker Compose e credenziali nel `.env`)
+
+Ogni stack ha un template `CLAUDE.md` con pattern, naming, struttura cartelle e
+comandi reali.
+
+---
 
 ## Limiti noti
 
-- Il flusso dell'intervista e del Brief è guidato dal modello (conversazionale):
-  la qualità dipende dalle tue risposte; i default coprono chi non sa rispondere.
-- I comandi di scaffolding e di installazione cambiano nel tempo: Repo Forge li
-  **verifica** prima di eseguirli, ma se la rete non è disponibile mostra il
-  link alla documentazione ufficiale invece del comando.
-- Il backend .NET richiede l'SDK `dotnet` installato localmente (non incluso).
-- Il plugin non ha ancora un'icona per il catalogo (warning non bloccante in
-  `claude plugin validate`).
+- Intervista e Brief sono guidati dal modello (conversazionali): la qualità
+  dipende dalle tue risposte; i default coprono chi non sa rispondere.
+- Lo scaffolding usa le CLI ufficiali, quindi serve la toolchain dello stack
+  scelto (Node, .NET SDK, Python, PHP+Composer, Go). I comandi di installazione
+  sono **verificati**, mai inventati: senza rete, Repo Forge mostra il link alla
+  documentazione ufficiale invece del comando.
 
-## Aggiornare il plugin
-
-```powershell
-claude plugin marketplace update repo-forge
-claude plugin update repo-forge@repo-forge
-```
-
-Per disinstallarlo: `claude plugin uninstall repo-forge`.
+---
 
 ## Sviluppo e test
 
 ```bash
-npm test                      # suite di test (Node, nessuna dipendenza)
-node scripts/validate-plugin.js   # validazione JSON + frontmatter
-claude plugin validate .      # validazione ufficiale
+npm test                        # suite di test (Node, nessuna dipendenza)
+node scripts/validate-plugin.js # validazione JSON + frontmatter
+claude plugin validate .        # validazione ufficiale
 ```
 
-La cartella `sandbox/` è usata solo per le simulazioni end-to-end ed è
-git-ignorata.
+La CI gira su **Ubuntu (Node 18/20/22) e Windows**. La cartella `sandbox/` è
+usata solo per le simulazioni end-to-end ed è git-ignorata.
+
+---
+
+<p align="center"><sub>MIT · costruito per Claude Code</sub></p>
