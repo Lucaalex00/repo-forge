@@ -34,16 +34,26 @@ part's folder.
 
 ## Per-part CLAUDE.md
 
-Use the matching template in `templates/claude-md/` as a starting point:
-`angular.md`, `react.md`, `nextjs.md`, `vue.md`, `dotnet.md`, `nest-express.md`,
-`fastapi.md`, `django.md`, `laravel.md`. Each covers patterns, naming, folder
+Use the matching template in `templates/claude-md/` as a starting point.
+Frontend: `angular.md`, `react.md`, `nextjs.md`, `vue.md`, `sveltekit.md`,
+`astro.md`. Backend: `dotnet.md`, `nest-express.md`, `fastapi.md`, `django.md`,
+`laravel.md`, `symfony.md`, `go.md`. Each covers patterns, naming, folder
 structure and the real build/test/lint commands for that stack. Fill in the
 project's actual choices; delete rows that do not apply.
 
 ## Locking
 
 1. Create `.repoforge/locked.json` listing every constitution file you created
-   (project-relative paths). See `references/lock-format.md` for the schema.
+   (project-relative paths). Use the helper so the file and its timestamp are
+   written deterministically (do **not** lock `CHANGELOG.md` or `docs/adr/*`):
+
+   ```bash
+   node "${CLAUDE_PLUGIN_ROOT}/scripts/lock.js" --dir . \
+     --files "PROJECT_BRIEF.md,ARCHITECTURE.md,GUIDELINES.md,GUARDRAILS.md,CONVENTIONS.md,WORKFLOW.md,CLAUDE.md,frontend/CLAUDE.md,backend/CLAUDE.md"
+   ```
+
+   Adjust the list and paths to the real files and chosen layout. See
+   `references/lock-format.md` for the schema.
 2. Make sure the plugin's `guard-locked` hook is active (it ships with the
    plugin; nothing to copy into the project). From now on, edits to listed files
    are blocked unless `/repo-forge:change` opens a temporary unlock window.

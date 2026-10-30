@@ -26,25 +26,27 @@ Follow this procedure exactly:
    apply to the locked file(s). Ask the user to approve in plain words. Do not
    proceed on a vague answer.
 
-4. **Open a temporary unlock window.** After approval, create
-   `.repoforge/unlock.json`:
+4. **Open a temporary unlock window.** After approval, run the helper (it
+   computes the 10-minute expiry and scopes the window deterministically — do
+   not hand-write the timestamp):
 
-   ```json
-   {
-     "expiresAt": "<ISO-8601 timestamp 10 minutes from now>",
-     "paths": ["<relative path(s) being changed>"],
-     "reason": "<short reason>",
-     "adr": "docs/adr/NNNN-*.md"
-   }
+   ```bash
+   node "${CLAUDE_PLUGIN_ROOT}/scripts/unlock.js" --dir . \
+     --paths "<relative path(s) being changed, comma-separated>" \
+     --minutes 10 --reason "<short reason>" --adr "docs/adr/NNNN-*.md"
    ```
 
-   Compute `expiresAt` as now + 10 minutes in UTC ISO-8601
-   (e.g. `2026-01-01T12:34:56Z`). Scope `paths` to only the files being
-   changed. `unlock.json` is git-ignored and machine-local.
+   This writes `.repoforge/unlock.json` (git-ignored, machine-local), scoped to
+   only the files being changed.
 
 5. **Apply the change** to the locked file(s) and update `CHANGELOG.md`.
 
-6. **Re-lock.** Delete `.repoforge/unlock.json` so the guard is active again.
+6. **Re-lock.** Close the window so the guard is active again:
+
+   ```bash
+   node "${CLAUDE_PLUGIN_ROOT}/scripts/unlock.js" --dir . --clear
+   ```
+
    Confirm to the user what changed and that the structure is locked again.
 
 Never widen the unlock beyond the approved files, and never leave an unlock
