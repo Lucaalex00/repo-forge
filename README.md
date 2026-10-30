@@ -67,8 +67,10 @@ claude plugin install repo-forge@repo-forge --scope user
 Dentro una sessione: `/plugin marketplace add Lucaalex00/repo-forge` e poi
 `/plugin install repo-forge@repo-forge`.
 
-Per installare una versione fissa, aggiungi il tag:
-`claude plugin marketplace add Lucaalex00/repo-forge#v1.1.0`.
+Per fissare una versione specifica puoi puntare a un commit o a un branch:
+`claude plugin marketplace add Lucaalex00/repo-forge#<commit-o-branch>`
+(una release taggata potrà essere aggiunta in seguito dalla sezione Releases di
+GitHub).
 
 > **Provarlo senza installarlo** (utile per svilupparlo): da una copia locale
 > del repository esegui `claude --plugin-dir .` in quella cartella.
