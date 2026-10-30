@@ -77,6 +77,22 @@ test('commandWriteTargets: PowerShell Remove-Item', (t) => {
   const got = guard.commandWriteTargets('Remove-Item -Path CLAUDE.md');
   t.ok(got.some((x) => guard.pathMatches(x, 'CLAUDE.md')));
 });
+test('commandWriteTargets: python -c open(...,"w") is a write', (t) => {
+  const got = guard.commandWriteTargets(`python3 -c "open('docs/ARCHITECTURE.md','w').write('x')"`);
+  t.ok(got.some((x) => guard.pathMatches(x, 'docs/ARCHITECTURE.md')));
+});
+test('commandWriteTargets: node -e writeFileSync is a write', (t) => {
+  const got = guard.commandWriteTargets(`node -e "require('fs').writeFileSync('PROJECT_BRIEF.md','x')"`);
+  t.ok(got.some((x) => guard.pathMatches(x, 'PROJECT_BRIEF.md')));
+});
+test('commandWriteTargets: php file_put_contents is a write', (t) => {
+  const got = guard.commandWriteTargets(`php -r "file_put_contents('CLAUDE.md','x');"`);
+  t.ok(got.some((x) => guard.pathMatches(x, 'CLAUDE.md')));
+});
+test('commandWriteTargets: python open(...,"r") read is NOT a write', (t) => {
+  const got = guard.commandWriteTargets(`python3 -c "print(open('docs/ARCHITECTURE.md','r').read())"`);
+  t.equal(got.length, 0);
+});
 test('commandWriteTargets: innocent cat read has no targets', (t) => {
   t.equal(guard.commandWriteTargets('cat docs/ARCHITECTURE.md').length, 0);
 });

@@ -161,11 +161,34 @@ function segmentWriteTargets(segment) {
   return targets;
 }
 
+/** Write calls hidden inside interpreter one-liners (python -c, node -e, …),
+ *  where the path is an argument to a known write function rather than a shell
+ *  redirect. Precise: only fires on actual write-call syntax, so it does not
+ *  flag reads. Scans the whole command (the code is usually a quoted string). */
+const INTERPRETER_WRITE_CALLS = [
+  /\bopen\s*\(\s*(['"])([^'"]+)\1\s*,\s*(['"])[rbt+]*[wax][rbt+]*\3/gi, // python open(x, 'w'|'a'|...)
+  /\bwrite_?file(?:sync)?\s*\(\s*(['"])([^'"]+)\1/gi,                    // node fs.writeFile(Sync)(x
+  /\b(?:append_?file(?:sync)?|createwritestream)\s*\(\s*(['"])([^'"]+)\1/gi,
+  /\bfile\.(?:write|open|new)\s*\(\s*(['"])([^'"]+)\1/gi,               // ruby File.write/open/new(x
+  /\b(?:file_put_contents|fopen)\s*\(\s*(['"])([^'"]+)\1/gi,           // php
+];
+
+function interpreterWriteTargets(cmd) {
+  const out = [];
+  for (const re of INTERPRETER_WRITE_CALLS) {
+    re.lastIndex = 0;
+    let m;
+    while ((m = re.exec(cmd)) !== null) out.push(m[2]);
+  }
+  return out;
+}
+
 function commandWriteTargets(cmd) {
   const out = [];
   splitSegments(cmd).forEach((seg) => {
     segmentWriteTargets(seg).forEach((t) => out.push(t));
   });
+  interpreterWriteTargets(cmd).forEach((t) => out.push(t));
   return out;
 }
 
@@ -316,6 +339,7 @@ module.exports = {
   extractTargets,
   commandWriteTargets,
   segmentWriteTargets,
+  interpreterWriteTargets,
   isUnlocked,
   decide,
   findProjectRoot,
