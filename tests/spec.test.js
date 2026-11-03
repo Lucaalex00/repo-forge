@@ -56,6 +56,19 @@ test('spec: warns when backend is "none" but dbScripts targets the backend', (t)
   t.ok(warnings.some((w) => /dbScripts is "backend" but stack.backend is "none"/.test(w)));
 });
 
+test('spec: github block is validated and normalized', (t) => {
+  const ok = spec.validateSpec({ vision: longVision, level: 'expert', github: { owner: 'Lucaalex00', repo: 'terzo-spazio' } });
+  t.equal(ok.errors.length, 0, ok.errors.join(';'));
+  t.equal(ok.normalized.github.visibility, 'private');
+  t.ok(ok.normalized.github.publish);
+  const bad = spec.validateSpec({ vision: longVision, level: 'expert', github: { owner: 'bad owner!', repo: 'a b', visibility: 'secret' } });
+  t.ok(bad.errors.some((e) => /visibility/.test(e)));
+  t.ok(bad.errors.some((e) => /owner/.test(e)));
+  t.ok(bad.errors.some((e) => /github.repo/.test(e)));
+  const noOwner = spec.validateSpec({ vision: longVision, level: 'expert', github: { publish: true } });
+  t.ok(noOwner.warnings.some((w) => /asked at publish time/.test(w)));
+});
+
 test('spec: the shipped example validates', (t) => {
   const file = path.resolve(__dirname, '..', 'skills', 'repo-interview', 'references', 'repoforge.config.example.json');
   const { errors } = spec.validateSpec(JSON.parse(fs.readFileSync(file, 'utf8')));
