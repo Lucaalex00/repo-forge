@@ -94,6 +94,21 @@ function validateSpec(spec) {
     warnings.push(`only ${g.length + gl.length} rules in spec; rules-advisor will top up to at least 10`);
   }
 
+  // github (optional): where /repo-forge:publish will push the project.
+  if (spec.github !== undefined) {
+    const gh = spec.github || {};
+    normalized.github = {
+      publish: gh.publish !== false,
+      owner: gh.owner || null,
+      repo: gh.repo || null,
+      visibility: gh.visibility || 'private',
+    };
+    if (gh.visibility && !['private', 'public'].includes(gh.visibility)) errors.push('github.visibility must be private|public');
+    if (gh.owner && !/^[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})$/.test(gh.owner)) errors.push('github.owner is not a valid GitHub user/organization name');
+    if (gh.repo && !/^[A-Za-z0-9._-]{1,100}$/.test(gh.repo)) errors.push('github.repo may contain only letters, digits, ".", "_" and "-"');
+    if (normalized.github.publish && !gh.owner) warnings.push('github.owner missing; it will be asked at publish time');
+  }
+
   return { errors, warnings, normalized };
 }
 

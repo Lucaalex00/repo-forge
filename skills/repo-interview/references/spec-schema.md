@@ -28,6 +28,10 @@ rejected.
 | `rules.guardrails` | no | string[] (advisor tops up to ≥10) |
 | `rules.guidelines` | no | string[] |
 | `workflow.tools` | no | string[] |
+| `github.publish` | no (default `true` when `github` is present) | boolean — publish with `/repo-forge:publish` at the end |
+| `github.owner` | no (asked at publish time) | GitHub username or organization |
+| `github.repo` | no (default: folder name) | letters, digits, `.`, `_`, `-` |
+| `github.visibility` | no (default `private`) | `private` \| `public` |
 
 Secrets are never put in the spec — only integration **names** and the **env key
 names**. Real values go in `.env`.
@@ -42,6 +46,7 @@ names**. Real values go in `.env`.
   "features": { "mustHave": ["menu", "reservations", "admin", "opening hours"], "niceToHave": ["gallery"] },
   "stack": { "frontend": "next", "backend": "none", "database": "sqlite" },
   "layout": { "repo": "monorepo", "docs": "root", "dbScripts": "separate" },
-  "integrations": [{ "name": "email (SMTP)", "envKeys": ["SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD"] }]
+  "integrations": [{ "name": "email (SMTP)", "envKeys": ["SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD"] }],
+  "github": { "publish": true, "owner": "your-github-username", "repo": "bakery-booking", "visibility": "private" }
 }
 ```

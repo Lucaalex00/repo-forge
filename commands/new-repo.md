@@ -39,7 +39,8 @@ node "${CLAUDE_PLUGIN_ROOT}/scripts/spec.js" --file repoforge.config.json --dir 
 
 If it validates (the 50-word vision gate is enforced here too), use the
 normalized spec as the interview output and jump straight to Phase 2 (stack) →
-Brief → scaffold → docs → lock, asking the user only to approve the Brief. If it
+Brief → scaffold → docs → lock → publish (if `github.publish` is true), asking
+the user only to approve the Brief. If it
 reports errors, show them and either fix the spec with the user or fall back to
 the interview. See `skills/repo-interview/references/spec-schema.md`.
 
@@ -63,12 +64,18 @@ the interview. See `skills/repo-interview/references/spec-schema.md`.
 6. **Scaffold** — once approved, invoke the `repo-scaffolder` skill. Use the
    official CLIs for the chosen stack and honor the chosen layout (monorepo vs
    separate repos; docs at root / under FE / under BE / dedicated repo; DB
-   scripts inside the backend or in a separate folder).
+   scripts inside the backend or in a separate folder). This phase always ends
+   with `node "${CLAUDE_PLUGIN_ROOT}/scripts/install-guards.js" --dir <root>` —
+   do not skip it, even in a fast run.
 7. **Constitution + lock** — invoke the `repo-docs` skill. Generate the
    separate governance documents, fill them from the *real* decisions (no
-   placeholders), then lock them via `.repoforge/locked.json`.
+   placeholders), then lock them with `lock.js --auto`.
 8. **Final check** — invoke the `/repo-forge:check` checklist and report the
-   result.
+   result. Fix every ✗ and any "not installed" / "not locked" warning before
+   moving on.
+9. **Publish** — if the user chose GitHub in the interview (Block 0b), run the
+   `/repo-forge:publish` procedure now; otherwise remind them they can run it
+   later.
 
 Keep momentum: ask focused questions, offer sensible defaults, and never leave
 the user guessing what happens next.

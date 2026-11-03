@@ -26,6 +26,28 @@ argument — if so, skip this question and use that path. You can switch paths
 mid-interview if the user's answers suggest it (e.g. a "beginner" who clearly
 knows the stack).
 
+## Block 0b — GitHub (ask early, both paths)
+
+Ask right after the path choice, so a user without an account can create it
+while the interview goes on. Fixed choice:
+
+> **Do you want this project on GitHub?**
+> 1. **Yes, I have an account** — tell me your username.
+> 2. **Yes, but I don't have an account yet.**
+> 3. **Not now** — keep it local (you can publish later with `/repo-forge:publish`).
+
+- Option 1: record the **owner** (username or organization), the **repository
+  name** (default: the target folder name in kebab-case) and **visibility**
+  (default **private**).
+- Option 2: give the short guide in plain words — sign up at
+  https://github.com/signup and verify the email; optionally install the GitHub
+  CLI from https://cli.github.com (confirm the current install command there) and
+  run `gh auth login`. Then record the details as in option 1.
+- Tell them: **if they create the repository on the website, it must be empty**
+  (no README, .gitignore or license), otherwise it has to be merged later.
+
+The answers are used by `/repo-forge:publish` at the end of the flow.
+
 ### Question-style rule (both paths)
 
 - Use **fixed-choice** questions when the answer space is small and standard, or
@@ -119,5 +141,6 @@ CI, who may change the architecture.
 ## Output of this skill
 
 A compact structured summary (not a transcript) of the decisions, tagged with
-the chosen **path** and with every default/assumption clearly marked, ready for
+the chosen **path** and the **GitHub** details (publish yes/no, owner, repo,
+visibility), with every default/assumption clearly marked, ready for
 `stack-advisor`, `rules-advisor` and `workflow-advisor`.

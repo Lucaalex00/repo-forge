@@ -10,5 +10,6 @@
   "layout": { "repo": "monorepo", "docs": "root", "dbScripts": "separate" },
   "integrations": [
     { "name": "email (SMTP)", "envKeys": ["SMTP_HOST", "SMTP_USER", "SMTP_PASSWORD"] }
-  ]
+  ],
+  "github": { "publish": true, "owner": "your-github-username", "repo": "bakery-booking", "visibility": "private" }
 }
