@@ -168,7 +168,8 @@ test('publish e2e: remote created with a README (unrelated history) -> sync, the
   spawnSync('git', ['commit', '-q', '--no-edit'], { cwd: dir });
   git(dir, 'push -q origin main');
   t.equal(publish.run({ dir }).step, 'done');
-  t.equal(fs.readFileSync(path.join(dir, 'README.md'), 'utf8'), '# project\n');
+  // Normalize line endings: with core.autocrlf (Windows default) git checks out CRLF.
+  t.equal(fs.readFileSync(path.join(dir, 'README.md'), 'utf8').replace(/\r\n/g, '\n'), '# project\n');
 });
 
 /* ---- verify.js new checks ---- */
