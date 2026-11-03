@@ -45,21 +45,36 @@ project's actual choices; delete rows that do not apply.
 
 ## Locking
 
-1. Create `.repoforge/locked.json` listing every constitution file you created
-   (project-relative paths). Use the helper so the file and its timestamp are
-   written deterministically (do **not** lock `CHANGELOG.md` or `docs/adr/*`):
+1. Create `.repoforge/locked.json` with the helper. `--auto` discovers the core
+   documents and every `CLAUDE.md` / `AGENTS.md` (root and per part), skips
+   framework-owned files, and never locks `CHANGELOG.md` or `docs/adr/*`:
 
    ```bash
-   node "${CLAUDE_PLUGIN_ROOT}/scripts/lock.js" --dir . \
-     --files "PROJECT_BRIEF.md,ARCHITECTURE.md,GUIDELINES.md,GUARDRAILS.md,CONVENTIONS.md,WORKFLOW.md,CLAUDE.md,AGENTS.md,frontend/CLAUDE.md,backend/CLAUDE.md"
+   node "${CLAUDE_PLUGIN_ROOT}/scripts/lock.js" --dir . --auto
    ```
 
-   Adjust the list and paths to the real files and chosen layout. See
+   Check the printed list; add anything it missed with `--files "<path>"`. See
    `references/lock-format.md` for the schema.
 2. Make sure the plugin's `guard-locked` hook is active (it ships with the
    plugin; nothing to copy into the project). From now on, edits to listed files
    are blocked unless `/repo-forge:change` opens a temporary unlock window.
 3. Tell the user which files are locked and how to change them later.
+
+## Framework-managed agent files (do not lock or overwrite)
+
+Some frameworks write their own agent instructions. **Next.js 16+** inserts a
+managed block (`<!-- BEGIN:nextjs-agent-rules -->` … `<!-- END:nextjs-agent-rules -->`)
+into the `AGENTS.md` of the Next.js app folder whenever `next dev` runs with an
+AI agent, and re-adds it if removed (it keeps any other content in the file).
+
+- **App in a subfolder** (e.g. `apps/web`, preferred): leave that `AGENTS.md`
+  to Next.js — do not edit or lock it (`lock.js --auto` skips it, because it
+  contains only the managed block). Repo Forge's `AGENTS.md` lives at the root.
+- **App at the repository root**: Next.js would write its block into Repo
+  Forge's root `AGENTS.md`. Either keep Repo Forge's content *outside* the
+  markers and commit the Next.js block **before** locking (it only changes on a
+  Next.js upgrade — then go through `/repo-forge:change`), or set
+  `agentRules: false` in `next.config` to turn the generation off.
 
 ## Quality bar
 

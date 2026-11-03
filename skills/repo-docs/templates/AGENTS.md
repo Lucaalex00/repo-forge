@@ -25,8 +25,8 @@ rules hold whichever tool edits the repo.
 
 ## Changing a locked file (any agent)
 1. Add a numbered ADR under `docs/adr/` explaining the change.
-2. Open the unlock window: `node scripts/unlock.js --dir . --paths "<file>" --minutes 10 --reason "<why>" --adr "<adr path>"` (if the scripts were installed into the project), or follow `WORKFLOW.md`.
-3. Make the edit, update `CHANGELOG.md`, then close the window
-   (`node scripts/unlock.js --dir . --clear`).
+2. Open the unlock window: `node scripts/unlock.cjs --dir . --paths "<file>" --minutes 10 --reason "<why>" --adr "<adr path>"`.
+3. Make the edit, update `CHANGELOG.md`, commit, then close the window
+   (`node scripts/unlock.cjs --dir . --clear`).
 
 In Claude Code, `/repo-forge:change` does all of this for you.

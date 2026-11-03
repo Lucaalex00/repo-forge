@@ -17,6 +17,7 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const { discoverConstitution, normalizeRel } = require('./lock.js');
 
 const PLACEHOLDER_PATTERNS = [/\bTODO\b/, /\bTBD\b/, /\bFIXME\b/, /\bXXX\b/, /<[^>\n]*\s[^>\n]*>/];
 const CORE_DOCS = ['PROJECT_BRIEF.md', 'ARCHITECTURE.md', 'GUIDELINES.md', 'GUARDRAILS.md', 'CONVENTIONS.md', 'WORKFLOW.md', 'CHANGELOG.md', 'CLAUDE.md'];
@@ -67,6 +68,16 @@ function isTracked(dir, rel) {
   } catch (_) { return false; }
 }
 
+/** Every place a pre-commit hook may live for this project. */
+function hookCandidates(dir) {
+  const files = [path.join(dir, '.husky', 'pre-commit'), path.join(dir, '.githooks', 'pre-commit'), path.join(dir, '.git', 'hooks', 'pre-commit')];
+  try {
+    const configured = execSync('git config core.hooksPath', { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    if (configured) files.push(path.join(dir, configured, 'pre-commit'));
+  } catch (_) { /* not set */ }
+  return files;
+}
+
 function runChecks(dir, now = Date.now()) {
   const results = [];
   const pass = (msg) => results.push({ level: 'pass', msg });
@@ -105,6 +116,20 @@ function runChecks(dir, now = Date.now()) {
   const ruleCount = countRules(findByBasename(dir, 'GUARDRAILS.md')) + countRules(findByBasename(dir, 'GUIDELINES.md'));
   if (ruleCount >= 10) pass(`found ${ruleCount} project rules (guardrails + guidelines)`);
   else warn(`only ${ruleCount} project rules found; aim for at least 10 across GUARDRAILS.md and GUIDELINES.md`);
+
+  // Discovered constitution docs (incl. per-part CLAUDE.md/AGENTS.md) that are
+  // not locked. Framework-owned files (e.g. Next.js's generated AGENTS.md) are
+  // skipped by discovery on purpose.
+  const lockedSet = new Set(lock.locked.map(normalizeRel));
+  const notLocked = discoverConstitution(dir).filter((p) => !lockedSet.has(p));
+  if (notLocked.length) warn('constitution document(s) not in locked.json: ' + notLocked.join(', ') + ' — run lock.js --auto');
+  else pass('every discovered constitution document is locked');
+
+  // Pre-commit guards: enforce the lock and block secrets outside Claude Code too.
+  const hookTexts = hookCandidates(dir).map((f) => { try { return fs.readFileSync(f, 'utf8'); } catch (_) { return ''; } }).join('\n');
+  const missingGuards = ['secret-guard', 'lock-guard'].filter((g) => !hookTexts.includes(g));
+  if (missingGuards.length) warn('pre-commit guard(s) not installed: ' + missingGuards.join(', ') + ' — run install-guards.js');
+  else pass('pre-commit secret-guard and lock-guard are installed');
 
   // Unlock token state.
   const unlock = readJson(path.join(dir, '.repoforge', 'unlock.json'));

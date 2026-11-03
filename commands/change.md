@@ -45,9 +45,15 @@ Follow this procedure exactly:
    This writes `.repoforge/unlock.json` (git-ignored, machine-local), scoped to
    only the files being changed.
 
-5. **Apply the change** to the locked file(s) and update `CHANGELOG.md`.
+5. **Apply the change** to the locked file(s) and update `CHANGELOG.md`. If
+   the project is a git repository, **commit now, while the window is open** —
+   the ADR, the locked file(s) and `CHANGELOG.md` in one commit (e.g.
+   `docs: <decision> (ADR NNNN)`). The pre-commit lock-guard only lets changes to
+   locked files through during the window; a commit made after re-locking would
+   be rejected. If the user prefers to commit later, tell them it must happen
+   before the window expires.
 
-6. **Re-lock.** Close the window so the guard is active again:
+6. **Re-lock.** Close the window so the guards are active again:
 
    ```bash
    node "${CLAUDE_PLUGIN_ROOT}/scripts/unlock.js" --dir . --clear

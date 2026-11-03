@@ -38,6 +38,13 @@ server/ or actions/          # server actions, data access
 | Lint | `npm run lint` |
 | Test | `<Playwright/Vitest>` |
 
+## Generated AGENTS.md (Next.js 16+)
+`next dev` writes a managed block (`<!-- BEGIN:nextjs-agent-rules -->`) into
+this app's `AGENTS.md` and points agents to the version-matched docs in
+`node_modules/next/dist/docs/`. Read those before using an API you are unsure
+of. Do not edit that block; commit it when it changes. It can be turned off
+with `agentRules: false` in `next.config`.
+
 ## Must / must-not
 - Never import server-only modules (db, secrets) into client components.
 - Keep `NEXT_PUBLIC_*` free of secrets.

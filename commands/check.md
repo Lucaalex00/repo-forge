@@ -21,10 +21,19 @@ cannot do (build/lint):
 node "${CLAUDE_PLUGIN_ROOT}/scripts/verify.js" --dir .
 ```
 
-It covers items 1–6 mechanically (locked.json integrity, locked files exist, no
-stale unlock, `.env` ignored/untracked, `.env.example` present, no leftover
+It covers items 1–6 mechanically (locked.json integrity, locked files exist,
+every constitution document locked, pre-commit guards installed, no stale
+unlock, `.env` ignored/untracked, `.env.example` present, no leftover
 placeholders). Then go through every item below, mark ✅ / ❌, and show the user a
 summary. Do not claim a check passed unless you actually verified it.
+
+Offer to fix what the checker can fix, then re-run it:
+- "pre-commit guard(s) not installed" →
+  `node "${CLAUDE_PLUGIN_ROOT}/scripts/install-guards.js" --dir .`
+  (with Husky, tell the user the guards become active after `npm install`);
+- "constitution document(s) not in locked.json" →
+  `node "${CLAUDE_PLUGIN_ROOT}/scripts/lock.js" --dir . --auto`.
+Commit the result (the guard scripts are new files, so the commit is allowed).
 
 1. **Structure present** — the chosen layout exists (monorepo vs separate
    repos; FE/BE folders; docs location; DB scripts location) as decided in the

@@ -36,7 +36,10 @@ in the repository:
 - Start `CHANGELOG.md` at the current state; first ADR records the adoption.
 
 ## 4. Lock and verify
-- Create `.repoforge/locked.json` listing the generated constitution files.
+- Lock with `node "${CLAUDE_PLUGIN_ROOT}/scripts/lock.js" --dir . --auto` and
+  install the pre-commit guards with
+  `node "${CLAUDE_PLUGIN_ROOT}/scripts/install-guards.js" --dir .` (it plugs into
+  an existing Husky/`core.hooksPath` setup instead of replacing it).
 - Ensure `.env`/secret files are git-ignored; if secrets are already committed,
   flag it as a risk (do not try to rewrite history unasked).
 - Run `/repo-forge:check` (verification checklist) and report.
