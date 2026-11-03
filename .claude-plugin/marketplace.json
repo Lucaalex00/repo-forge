@@ -9,7 +9,7 @@
     {
       "name": "repo-forge",
       "source": "./",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "description": "Interview-driven, structure-locked web repository scaffolder.",
       "category": "scaffolding",
       "tags": ["scaffold", "governance", "interview", "stack"]

@@ -4,6 +4,40 @@ All notable changes to Repo Forge are documented here.
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
 this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-11-03
+
+Improvements from the first real project built with Repo Forge
+(`terzo-spazio`, Next.js monorepo, 3 prompts).
+
+### Added
+- **`/repo-forge:publish`** — guided publishing to GitHub: first commit, create
+  the repository (GitHub CLI or an *empty* repo on the website), push. Handles a
+  repository created with a README (unrelated histories). Backed by
+  `scripts/publish.js`, a read-only check that prints the next step.
+- **GitHub question at the start** of the interview (Block 0b): account yes/no
+  (with a short sign-up guide), owner, repo name, visibility. Also a `github`
+  block in the non-interactive spec. `/repo-forge:new-repo` ends with publishing.
+- **`scripts/install-guards.js`** — installs the pre-commit guards
+  deterministically: copies them as `.cjs` (work in `"type": "module"` projects)
+  and wires them into Husky, a custom `core.hooksPath`, or `.githooks`.
+  Idempotent. The scaffolder must run it; `/repo-forge:check` offers it.
+- **`lock.js --auto`** — discovers the constitution (core docs + every
+  `CLAUDE.md`/`AGENTS.md`, root and per part) and skips framework-owned files.
+
+### Changed
+- `verify.js` now warns when the pre-commit guards are missing and when a
+  discovered constitution document is not locked.
+- `/repo-forge:change` commits the change **while** the unlock window is open
+  (a commit after re-locking would be rejected by the lock-guard).
+- `repo-docs` and the Next.js template explain the `AGENTS.md` block that
+  Next.js 16+ manages during `next dev` (verified in the Next.js source), and how
+  to coexist with it (`agentRules: false` when the app sits at the repo root).
+- Version bumped so `claude plugin update` picks up the changes.
+
+### Fixed
+- In the real project the pre-commit guards had not been installed (the step
+  was skipped in a fast run): now deterministic and checked.
+
 ## [1.1.0] - 2026-10-30
 
 Hardening and test release: made the plugin conformant to the current Claude

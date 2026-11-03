@@ -7,9 +7,9 @@
 <p align="center"><em>Dall'idea a un repository web solido, con una struttura che non cambia nel tempo.</em></p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/version-1.1.0-blue" alt="version" />
+  <img src="https://img.shields.io/badge/version-1.2.0-blue" alt="version" />
   <a href="https://github.com/Lucaalex00/repo-forge/actions/workflows/test.yml"><img src="https://github.com/Lucaalex00/repo-forge/actions/workflows/test.yml/badge.svg?branch=main" alt="CI" /></a>
-  <img src="https://img.shields.io/badge/tests-89%20passing-brightgreen" alt="tests" />
+  <img src="https://img.shields.io/badge/tests-103%20passing-brightgreen" alt="tests" />
   <img src="https://img.shields.io/badge/Claude%20Code-plugin-8A2BE2" alt="Claude Code plugin" />
   <img src="https://img.shields.io/badge/cross--model-AGENTS.md-informational" alt="cross-model" />
   <img src="https://img.shields.io/badge/license-MIT-green" alt="license" />
@@ -90,9 +90,15 @@ claude plugin uninstall repo-forge
    /repo-forge:new-repo
    ```
 
-3. Scegli **Principiante** o **Esperto**. In entrambi i casi parti dal gate
-   delle 50 parole sulla visione, poi: stack → regole → workflow → **Project
-   Brief** (da approvare) → scaffolding → documenti → **lock** → check finale.
+3. Scegli **Principiante** o **Esperto** e dì se vuoi il progetto su **GitHub**
+   (se non hai un account, Repo Forge ti spiega come crearlo). Poi: gate delle
+   50 parole sulla visione → stack → regole → workflow → **Project Brief** (da
+   approvare) → scaffolding → documenti → **lock** → check → **pubblicazione su
+   GitHub**.
+
+> 💡 Se crei tu il repository sul sito di GitHub, crealo **vuoto** (senza README,
+> .gitignore o licenza): altrimenti va unito a mano. `/repo-forge:publish`
+> gestisce comunque anche quel caso.
 
 > **Scorciatoia agentica / pochi token:** metti nella cartella un
 > `repoforge.config.json` (schema ed esempio in
@@ -109,6 +115,7 @@ claude plugin uninstall repo-forge
 | `/repo-forge:change [cosa cambiare]` | Unico modo sicuro per modificare un file bloccato: ADR + approvazione + finestra di sblocco di 10 minuti, poi ri-blocca. |
 | `/repo-forge:check` | Verifica finale (controllo deterministico: `locked.json`, file presenti, costituzione completa, ≥10 regole, `.env` ignorato, nessun placeholder). |
 | `/repo-forge:check adopt` | **Adozione**: applica Repo Forge a un repository **già esistente**, deducendo stack e convenzioni dal codice reale. |
+| `/repo-forge:publish [owner/repo] [private\|public]` | Pubblica su GitHub passo-passo: primo commit, creazione del repo (GitHub CLI o sito), push. Gestisce anche i repo creati con README. |
 
 ---
 
@@ -125,11 +132,13 @@ git-ignorato e locale. Lock, sblocco, ADR e verifica sono gestiti da script
 deterministici (`scripts/lock.js`, `unlock.js`, `adr.js`, `verify.js`), così
 timestamp e scadenze non dipendono da calcoli a mano.
 
-Nei progetti generati vengono anche installati due **guard pre-commit** (Node,
-cross-platform): uno **anti-segreti** (blocca commit di `.env` reali o di
-chiavi/token) e uno di **lock portabile**, che fa rispettare il blocco della
-struttura a qualsiasi strumento — altri agenti, commit manuali, CI — non solo a
-Claude Code.
+Nei progetti generati vengono anche installati (da `scripts/install-guards.js`,
+che si aggancia a Husky se c'è) due **guard pre-commit** (Node, cross-platform):
+uno **anti-segreti** (blocca commit di `.env` reali o di chiavi/token) e uno di
+**lock portabile**, che fa rispettare il blocco della struttura a qualsiasi
+strumento — altri agenti, commit manuali, CI — non solo a Claude Code. Il primo
+commit dei documenti è ammesso; sono bloccate solo le modifiche successive.
+`/repo-forge:check` avvisa (e propone la correzione) se mancano.
 
 ---
 

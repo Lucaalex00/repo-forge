@@ -1,6 +1,6 @@
 {
   "name": "repo-forge",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Interviews you in depth, recommends a stack, then scaffolds a solid web repository whose structure is locked so it never drifts.",
   "author": {
     "name": "Lucaalex00",

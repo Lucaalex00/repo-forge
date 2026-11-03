@@ -80,7 +80,7 @@ Notes:
 
 ## 6. Phase D — Automated tests
 
-- `tests/` runs with `npm test` (Node only, no dependencies): **89 tests, 188
+- `tests/` runs with `npm test` (Node only, no dependencies): **103 tests, 244
   assertions, all passing** (includes `scripts/lock.js`, `unlock.js`,
   `verify.js`, `adr.js`, `spec.js` and the portable `lock-guard.js`).
 - Coverage: locked/unlocked files, expired unlock, scoped unlock, relative,
@@ -197,6 +197,37 @@ zero):
 2. `unlock.js --paths all` wrote `["all"]`, which the guards didn't treat as
    unlock-everything. `unlock.js` now normalizes `all`/`*` to the string
    `"all"`, and the guards also accept an array form. Verified.
+
+## 7f. Field review of a real project (v1.2.0)
+
+The user built `terzo-spazio` (Next.js 16 monorepo, `apps/web`, Netlify) with
+Repo Forge in three prompts. Review of the real repository:
+
+- **Good:** specific, non-generic constitution (ARCHITECTURE justifies "no
+  backend/no database"; 11 verifiable guardrails such as "no analytics before
+  consent"); clean `.env.example`; `verify.js` 8/8 at first; five later feature
+  commits changed **none** of the locked files (no structural drift).
+- **Gap 1 — pre-commit guards not installed** (`.husky/pre-commit` ran only
+  `lint-staged`): the scaffolder step was skipped in a fast run. Fix:
+  `scripts/install-guards.js` (deterministic, `.cjs`, Husky-aware) + a
+  `verify.js` warning. Verified on a copy of the real project with `npm install`
+  (Husky active) and real commits: locked doc → **rejected**, real `.env` →
+  **rejected**, normal change → guards pass and `lint-staged` runs.
+- **Not a gap, on inspection:** `apps/web/AGENTS.md` was not locked — correct,
+  it is the file Next.js 16 writes during `next dev` (verified in
+  `next/dist/server/lib/generate-agent-files.js`, v16.4.3, together with the
+  real `agentRules: false` option). `lock.js --auto` now skips such
+  framework-owned files and locks everything else.
+- **Gap 2 — no publishing guidance** (the project first reached GitHub as a
+  README-only repo, then needed a merge). Fix: GitHub question at the start,
+  `/repo-forge:publish` + `scripts/publish.js`. Verified in a real headless
+  session against a local remote: first commit (guards active, no
+  `--no-verify`) → push → `done`; and in tests for the "repo created with a
+  README" case (unrelated histories → sync → done).
+- Found while fixing: `/repo-forge:change` must commit **inside** the unlock
+  window once the git lock-guard is installed — updated.
+
+Suite: **103 tests** passing.
 
 ## 8. Open items / manual verification on the user's Windows PC
 
